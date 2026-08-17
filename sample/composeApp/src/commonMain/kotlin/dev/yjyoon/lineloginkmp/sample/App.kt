@@ -97,6 +97,10 @@ fun App() {
                         }
                     },
                     enabled = !busy,
+                    // Deliberately stretched, because that is how a real sign-in screen uses it —
+                    // and because nothing here rendering a stretched button is exactly how the icon
+                    // square came to drift inward once.
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 OutlinedButton(

@@ -23,29 +23,23 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -70,6 +64,10 @@ import androidx.compose.ui.unit.dp
  * Scale with [height]. Everything else — the icon, the divider, the padding, the corner radius, the
  * caption size — is derived from it, so the icon's aspect ratio and the required padding hold at any
  * size. See [LineLoginButtonDefaults] for the ratios and where they were measured from.
+ *
+ * Given no width, the button wraps its content. Given a wider one — `Modifier.fillMaxWidth()`, a
+ * fixed `width`, a stretching parent — the icon square keeps its 1:1 ratio at the leading edge and
+ * the caption area takes the extra width.
  *
  * The button grows past [height] if the reader's font-size setting demands it, rather than clipping
  * the caption.
@@ -110,16 +108,26 @@ public fun LineLoginButton(
     val dividerColor =
         if (enabled) LineLoginButtonColors.Divider else LineLoginButtonColors.DisabledDivider
 
-    Box(
+    // Layer order matters, and the guidelines spell it out: the state overlay sits on the base
+    // colour, and the divider and content sit above the overlay — never tinted by it. Both colours
+    // are background layers of the button itself, so every child draws over them untouched.
+    val overlay =
+        when {
+            !enabled -> Color.Transparent
+            pressed -> LineLoginButtonColors.PressOverlay
+            hovered -> LineLoginButtonColors.HoverOverlay
+            else -> Color.Transparent
+        }
+
+    // A Layout rather than a Row: see lineLoginButtonGeometry for why a Row cannot both wrap its
+    // content and pin the icon square to the leading edge when the button is stretched.
+    Layout(
         modifier =
             modifier
-                // A minimum rather than a fixed height: at a large system font size the caption
-                // needs the room, and growing is better than clipping LINE's wording.
-                .heightIn(min = height)
                 .clip(shape)
                 .background(
                     if (enabled) LineLoginButtonColors.Base else LineLoginButtonColors.DisabledBackground,
-                )
+                ).background(overlay)
                 // A border belongs to the disabled state only — it is what keeps a white button
                 // visible on a white surface.
                 .then(
@@ -129,7 +137,7 @@ public fun LineLoginButton(
                         Modifier.border(1.dp, LineLoginButtonColors.DisabledBorder, shape)
                     },
                 )
-                // indication = null: the state overlay below is LINE's, and Material's ripple would
+                // indication = null: the state overlay above is LINE's, and Material's ripple would
                 // paint a second, non-designated colour over it.
                 .clickable(
                     enabled = enabled,
@@ -138,43 +146,17 @@ public fun LineLoginButton(
                     role = Role.Button,
                     onClick = onClick,
                 ),
-        contentAlignment = Alignment.Center,
-    ) {
-        // Layer order matters, and the guidelines spell it out: the state overlay sits on the base
-        // colour, and the divider and content sit above the overlay — never tinted by it.
-        val overlay =
-            when {
-                !enabled -> Color.Transparent
-                pressed -> LineLoginButtonColors.PressOverlay
-                hovered -> LineLoginButtonColors.HoverOverlay
-                else -> Color.Transparent
-            }
-        if (overlay != Color.Transparent) {
-            Box(Modifier.matchParentSize().background(overlay))
-        }
-
-        Row(
-            // Intrinsic height, so the divider spans the whole button while the button is still
-            // sized by its content.
-            modifier = Modifier.height(IntrinsicSize.Min),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // A square the full height of the button, matching LINE's artwork. The inset around the
-            // speech bubble is part of the icon itself, so there is no padding to add here.
+        content = {
+            // The inset around the speech bubble is part of the icon itself, so there is no padding
+            // to add here — the square is measured to the button's height and the artwork fills it.
             Image(
                 painter = lineIcon,
                 contentDescription = null,
-                modifier = Modifier.size(height),
                 colorFilter = ColorFilter.tint(contentColor),
             )
 
             if (text != null) {
-                Box(
-                    Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(dividerColor),
-                )
+                Box(Modifier.background(dividerColor))
 
                 // Only horizontal padding is applied. The vertical padding the guidelines recommend
                 // — X/2 — is what centring a correctly sized caption in a button this tall already
@@ -194,6 +176,51 @@ public fun LineLoginButton(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+        },
+    ) { measurables, constraints ->
+        val requestedIconSide = height.roundToPx()
+        val dividerWidth = if (measurables.size > 1) DividerThickness.roundToPx() else 0
+
+        // Measured against the room actually left beside the icon, so an over-long caption
+        // ellipsises instead of pushing the icon out of its square.
+        val textPlaceable =
+            measurables.getOrNull(2)?.measure(
+                Constraints(
+                    maxWidth =
+                        if (constraints.maxWidth == Constraints.Infinity) {
+                            Constraints.Infinity
+                        } else {
+                            (constraints.maxWidth - requestedIconSide - dividerWidth).coerceAtLeast(0)
+                        },
+                ),
+            )
+
+        val geometry =
+            lineLoginButtonGeometry(
+                minWidth = constraints.minWidth,
+                maxWidth = constraints.maxWidth,
+                minHeight = constraints.minHeight,
+                maxHeight = constraints.maxHeight,
+                iconSide = requestedIconSide,
+                dividerWidth = dividerWidth,
+                textWidth = textPlaceable?.width ?: 0,
+                textHeight = textPlaceable?.height ?: 0,
+            )
+
+        val iconPlaceable =
+            measurables[0].measure(Constraints.fixed(geometry.iconSide, geometry.iconSide))
+        val dividerPlaceable =
+            measurables.getOrNull(1)?.measure(Constraints.fixed(dividerWidth, geometry.height))
+
+        layout(geometry.width, geometry.height) {
+            // placeRelative, so a right-to-left layout mirrors the whole button and the icon stays
+            // on the leading edge.
+            iconPlaceable.placeRelative(geometry.iconX, geometry.iconY)
+            dividerPlaceable?.placeRelative(geometry.dividerX, 0)
+            textPlaceable?.placeRelative(geometry.textX, geometry.textY)
         }
     }
 }
+
+/** The hairline between the icon square and the caption, as drawn in LINE's artwork. */
+private val DividerThickness = 1.dp

@@ -83,6 +83,10 @@ Before "cleaning up" any of these, read the comment above them:
 - That icon is LY Corporation's trademark, unmodified, and outside this project's Apache licence.
   Never redraw, recolour or crop it — the guidelines list a modified mark as a mistake — and keep
   `NOTICE` in step with anything that changes about it.
+- `LineLoginButton` lays itself out with a `Layout`, not a `Row`. A `Row` cannot both wrap its
+  content when the button is given no width *and* pin the icon square to the leading edge when the
+  button is stretched: content-sized it centres and the icon drifts inward, weighted it claims the
+  parent's full width uninvited. `LineLoginButtonGeometryTest` pins both behaviours.
 - `LineLoginButtonDefaults`' ratios were measured from LINE's own 20/32/44 dp button images, not
   derived from the prose. `LineLoginButtonDefaultsTest` pins them; a rendered button was checked
   against the artwork to within a fraction of a dp.
