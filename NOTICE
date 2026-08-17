@@ -1,0 +1,31 @@
+line-login-kmp
+Copyright 2026 yjyoon
+
+This product includes software developed as part of the line-login-kmp project,
+licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------------
+Third-party material
+--------------------------------------------------------------------------------
+
+LINE icon
+  File:    lineloginkmp-compose/src/commonMain/kotlin/dev/yjyoon/lineloginkmp/
+           compose/LineIcon.kt  (embedded, Base64-encoded PNG)
+  Source:  LINE Login button template, distributed by LY Corporation
+           https://developers.line.biz/en/docs/line-login/login-button/
+  Terms:   Usage Guidelines for the LINE Login Button
+           https://terms2.line.me/LINE_Developers_Guidelines_for_Login_Button
+
+  The LINE icon is a trademark of LY Corporation. It is included here unmodified,
+  solely so that LineLoginButton renders a compliant LINE Login button, and it is
+  NOT licensed under the Apache License that covers the rest of this project. Its
+  use remains subject to LY Corporation's Usage Guidelines for the LINE Login
+  Button, which apply to you as well when you use this library's button.
+
+  LINE Login SDKs for Android and iOS are also products of LY Corporation and are
+  resolved as ordinary dependencies; no LINE SDK code is redistributed here.
+
+--------------------------------------------------------------------------------
+
+line-login-kmp is an independent open-source project. It is not affiliated with,
+endorsed by, or sponsored by LY Corporation.

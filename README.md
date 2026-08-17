@@ -63,11 +63,11 @@ signing-certificate SHA-1, and your iOS bundle identifier, registered on it — 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:0.1.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")
 
             // Optional: a Compose Multiplatform login button that follows LINE's design
             // guidelines. Skip it if you would rather build the login button yourself.
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:0.1.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.0.0")
         }
     }
 }
@@ -84,12 +84,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true                             // required — frameworks are dynamic by default
-            export("dev.yjyoon.lineloginkmp:lineloginkmp:0.1.0")     // ← add this
+            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")     // ← add this
         }
     }
     sourceSets {
         commonMain.dependencies {
-            api("dev.yjyoon.lineloginkmp:lineloginkmp:0.1.0")        // `api`, so there is something to export
+            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")        // `api`, so there is something to export
         }
     }
 }
@@ -239,42 +239,42 @@ colours, the divider, the padding, the isolation zone and the caption are all sp
 `lineloginkmp-compose` implements them:
 
 ```kotlin
-LineLoginButton(
-    lineIcon = painterResource(Res.drawable.line_icon),
-    onClick = { scope.launch { handle(LineLogin.login()) } },
-)
+LineLoginButton(onClick = { scope.launch { handle(LineLogin.login()) } })
 ```
 
-That gives you the exact palette including the hover and press overlays and the white disabled
-state, the divider between logo and caption, padding derived from the icon width, and a caption in
-LINE's own wording for the user's language — 18 of them, from LINE's table.
+That gives you LINE's own icon and caption, the exact palette including the hover and press overlays
+and the white disabled state, the divider between logo and caption, and geometry taken from LINE's
+button artwork. The caption follows the reader's language — 18 of them, in LINE's own wording.
 
 ```kotlin
 LineLoginButton(
-    lineIcon = painterResource(Res.drawable.line_icon),
     onClick = ::signIn,
     enabled = !busy,
     text = LineLoginButtonText.current().short,   // "Log in" instead of "Log in with LINE"
-    iconSize = 32.dp,                             // scales the whole button
+    height = 32.dp,                               // scales the whole button
 )
 
-LineLoginButton(lineIcon = icon, onClick = ::signIn, text = null)   // icon only, also allowed
+LineLoginButton(onClick = ::signIn, text = null)  // icon only, which the guidelines also allow
 ```
 
-Scale the button through `iconSize`, not a fixed height: every other measurement is derived from it,
-so the icon's aspect ratio and the required padding hold at any size.
+Scale through `height`: the icon, the divider, the corner radius, the padding and the caption size
+are all derived from it, so the icon's aspect ratio and the required padding hold at any size. The
+ratios come from measuring LINE's own 20/32/44 dp button images, and a rendered 44 dp button matches
+that artwork to within a fraction of a dp.
 
 `LineLoginButtonColors` and `LineLoginButtonDefaults` are public, so an app drawing its own button —
 in Android Views or SwiftUI — can still take the exact values.
 
-### You supply the icon
+### The icon, and the terms that come with it
 
-`lineIcon` has no default, and this library ships no LINE artwork. Download LINE's
-[button template](https://vos.line-scdn.net/line-developers/docs/media/line-login/login-button/LINE_Login_Button_Image.zip)
-— doing so is how you accept the
-[usage guidelines](https://terms2.line.me/LINE_Developers_Guidelines_for_Login_Button) attached to
-it, which nobody can do on your behalf — and use the **white** icon from it. The button tints the
-icon per state, so a white source is correct everywhere, including the grey disabled state.
+The LINE icon is bundled — the button needs no asset from you. It is the unmodified white icon from
+LINE's official template, so the mark is LINE's own rather than a lookalike, which the guidelines
+require.
+
+That icon is a trademark of LY Corporation and is **not** covered by this project's Apache licence.
+Using this button means LINE's
+[Usage Guidelines for the LINE Login Button](https://terms2.line.me/LINE_Developers_Guidelines_for_Login_Button)
+apply to your app too. See [NOTICE](NOTICE).
 
 The isolation zone is the one rule the button cannot enforce from the inside: keep other content
 `LineLoginButtonDefaults.isolationZone()` away from it.
@@ -443,5 +443,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-LINE is a trademark of LY Corporation. This is an independent open-source project and is not
-affiliated with, endorsed by, or sponsored by LY Corporation.
+LINE, and the LINE icon bundled in `lineloginkmp-compose`, are trademarks of LY Corporation. The
+icon is included under LINE's
+[Usage Guidelines for the LINE Login Button](https://terms2.line.me/LINE_Developers_Guidelines_for_Login_Button)
+and is not covered by the Apache licence above — see [NOTICE](NOTICE). This is an independent
+open-source project and is not affiliated with, endorsed by, or sponsored by LY Corporation.

@@ -73,6 +73,10 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
+
+            // For decodeToImageBitmap only — see LineIcon. Compose Multiplatform's *resource
+            // packaging* is deliberately not used: it does not reach the AAR this plugin builds.
+            implementation(libs.compose.components.resources)
         }
 
         commonTest.dependencies {

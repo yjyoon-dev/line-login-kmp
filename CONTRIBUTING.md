@@ -35,7 +35,7 @@ lineloginkmp/                 the published library
     ├── androidHostTest/      mapping against real LINE SDK objects, and the request bus
     └── iosTest/              the cinterop link smoke test
 lineloginkmp-compose/         optional second artifact: the Compose login button
-└── src/commonMain/           LineLoginButton, LINE's palette, geometry, caption table
+└── src/commonMain/           LineLoginButton, LINE's palette, geometry, captions, bundled icon
 sample/                       Compose Multiplatform app; also the iOS integration gate
 gradle-conventions/           publishing and formatting convention plugins
 ```
@@ -70,9 +70,35 @@ Before "cleaning up" any of these, read the comment above them:
 - `LineLoginButtonColors` has no way to override its values, and that is the point: LINE's
   [button guidelines](https://developers.line.biz/en/docs/line-login/login-button/) permit exactly
   those colours. Anything that makes a non-compliant button easy to build is a regression.
-- Neither the library nor the sample bundles the LINE icon. Downloading LINE's template is how a
-  developer accepts the usage guidelines that come with the mark, so it stays a parameter — and the
-  sample draws a plainly-labelled placeholder instead.
+- The LINE icon is a Base64 PNG in `LineIcon.kt` rather than a Compose resource. That is not
+  laziness: Compose Multiplatform's resource packaging does not reach the AAR that
+  `com.android.kotlin.multiplatform.library` produces, so the resource exists on iOS and is silently
+  missing on Android, and a consumer app dies at first composition with `MissingResourceException`.
+  Verified, not assumed.
+- That icon is LY Corporation's trademark, unmodified, and outside this project's Apache licence.
+  Never redraw, recolour or crop it — the guidelines list a modified mark as a mistake — and keep
+  `NOTICE` in step with anything that changes about it.
+- `LineLoginButtonDefaults`' ratios were measured from LINE's own 20/32/44 dp button images, not
+  derived from the prose. `LineLoginButtonDefaultsTest` pins them; a rendered button was checked
+  against the artwork to within a fraction of a dp.
+
+## Commit messages
+
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), one line, imperative mood,
+no trailing period:
+
+```
+feat(compose): add login button built to LINE's design guidelines
+fix(android): complete the login when the proxy Activity is destroyed
+docs: explain why the iOS half needs no Swift bridge
+```
+
+Types: `feat`, `fix`, `docs`, `test`, `refactor`, `perf`, `build`, `ci`, `chore`.
+Scopes, when one helps: `core`, `compose`, `android`, `ios`, `sample`.
+
+Keep the subject under ~72 characters and let the pull request carry the reasoning — that is what
+gets read during review and what ends up in the changelog. A `!` after the type, as in `feat!:`,
+marks a change that breaks the public API; those need an `api/*.api` update in the same commit.
 
 ## Before you open a pull request
 

@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [0.1.0]
+## [1.0.0] - 2026-08-17
 
 First release.
 
@@ -29,8 +29,8 @@ First release.
   Multiplatform button built to LINE's
   [design guidelines](https://developers.line.biz/en/docs/line-login/login-button/), including the
   state overlays, the disabled treatment, icon-derived padding, and LINE's recommended captions in
-  18 languages. It ships no LINE artwork: the icon is a parameter, because downloading LINE's
-  template is how a developer accepts the usage guidelines attached to it.
+  18 languages. LINE's own icon is bundled — unmodified, from LINE's official template — so the
+  button needs no asset from the consumer; see NOTICE for the trademark terms that come with it.
 
-[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v0.1.0
+[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.0

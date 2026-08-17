@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -82,15 +81,14 @@ fun App() {
                     fontWeight = FontWeight.Bold,
                 )
 
-                // The login button comes from :lineloginkmp-compose, so its colours, divider,
-                // padding and caption already follow LINE's design guidelines. The caption defaults
-                // to LINE's own wording for the device's language.
+                // The login button comes from :lineloginkmp-compose: LINE's own icon and caption,
+                // and colours, divider, radius and padding taken from LINE's button artwork. The
+                // caption follows the device's language.
                 //
                 // While a login is running the button is disabled rather than showing a spinner:
                 // the guidelines define a disabled state, and inventing a loading one would mean
                 // painting a colour they do not allow.
                 LineLoginButton(
-                    lineIcon = rememberVectorPainter(PlaceholderSpeechBubble),
                     onClick = {
                         scope.launch {
                             busy = true
@@ -99,12 +97,6 @@ fun App() {
                         }
                     },
                     enabled = !busy,
-                )
-
-                Text(
-                    text = "↑ placeholder icon — use LINE's official template asset in a real app",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 OutlinedButton(

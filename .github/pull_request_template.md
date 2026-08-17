@@ -1,3 +1,8 @@
+<!--
+  Title: a Conventional Commits subject, e.g. "fix(ios): stop a stale login process from
+  blocking every later login". See CONTRIBUTING.md.
+-->
+
 ## What this changes
 
 <!-- One or two sentences. Link the issue it resolves, if there is one. -->
