@@ -420,6 +420,11 @@ then:
 open sample/iosApp/iosApp.xcodeproj                # iOS
 ```
 
+## 📚 API documentation
+
+Generated with Dokka and published to
+<https://yjyoon-dev.github.io/line-login-kmp/> on every release.
+
 ## 🤝 Contributing
 
 Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for how the project is

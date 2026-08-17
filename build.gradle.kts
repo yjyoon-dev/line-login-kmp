@@ -20,6 +20,17 @@ plugins {
     alias(libs.plugins.compose.multiplatform) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.maven.publish) apply false
-    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.dokka)
     id("lineloginkmp.convention.spotless")
+}
+
+// Dokka aggregates both published modules here, so the site covers the whole API rather than
+// whichever module happened to be documented. `./gradlew dokkaGenerate` writes build/dokka/html.
+dependencies {
+    dokka(project(":lineloginkmp"))
+    dokka(project(":lineloginkmp-compose"))
+}
+
+dokka {
+    moduleName = "line-login-kmp"
 }

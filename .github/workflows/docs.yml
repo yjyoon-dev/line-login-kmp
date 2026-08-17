@@ -27,13 +27,15 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # Unscoped: the root project aggregates both published modules, so the site covers the whole
+      # API. Scoping this to one module silently drops the other one's documentation.
       - name: Generate API documentation
-        run: ./gradlew :lineloginkmp:dokkaGenerate
+        run: ./gradlew dokkaGenerate
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: lineloginkmp/build/dokka/html
+          path: build/dokka/html
 
       - uses: actions/deploy-pages@v4
