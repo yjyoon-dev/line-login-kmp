@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Nothing here is LINE-specific. The proxy Activity, the INTERNET permission and the
+      androidx.startup provider all arrive from the library's own manifest, and the LINE SDK's AAR
+      contributes its auth Activities and its Android 11+ <queries> block.
+    -->
+    <application
+        android:name=".SampleApplication"
+        android:allowBackup="false"
+        android:label="line-login-kmp"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LineLoginKmpSample">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|density|uiMode"
+            android:theme="@style/Theme.LineLoginKmpSample">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

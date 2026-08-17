@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Everything that does not need Xcode. Runs first because it is the one that usually fails.
+  library:
+    # macOS, not Linux: the iOS targets and their cinterop against LineSDKObjC only build here.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Formatting
+        run: ./gradlew spotlessCheck
+
+      - name: Public API has not changed unintentionally
+        run: ./gradlew :lineloginkmp:checkKotlinAbi
+
+      - name: Tests
+        run: ./gradlew :lineloginkmp:allTests
+
+      - name: Build library
+        run: ./gradlew :lineloginkmp:assemble
+
+      # Catches packaging mistakes — a missing POM field, an unpublished artifact — without needing
+      # credentials. The version must end in -SNAPSHOT: signAllPublications() makes signing
+      # mandatory for anything else, and this job has no signing key.
+      - name: Publish to Maven local
+        run: ./gradlew publishToMavenLocal -PVERSION_NAME=0.0.0-SNAPSHOT
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-reports
+          path: lineloginkmp/build/reports/tests
+
+  # The integration gate: an app that adds LineSDKObjC through SPM must link the Kotlin framework.
+  # Nothing else proves the iOS half actually works from a consumer's side.
+  sample:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Android sample
+        run: ./gradlew :sample:composeApp:assembleDebug
+
+      - name: iOS sample
+        working-directory: sample/iosApp
+        run: |
+          xcodebuild \
+            -project iosApp.xcodeproj \
+            -scheme iosApp \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      # The whole iOS design rests on this: the Kotlin framework references LINE's Objective-C
+      # classes by their Swift-mangled names, and the app's own copy of LineSDKObjC has to define
+      # them. A green xcodebuild alone would not prove it.
+      - name: The Kotlin framework's LineSDKObjC references really did resolve
+        working-directory: sample/iosApp
+        run: |
+          set -euo pipefail
+          app=$(ls -d build/DerivedData/Build/Products/Debug-iphonesimulator/*.app | head -1)
+          # Debug builds since Xcode 16 put the code in a companion dylib and leave a tiny stub
+          # behind as the executable, so pick the dylib when it exists.
+          binary="$app/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Info.plist")"
+          [ -f "$binary.debug.dylib" ] && binary="$binary.debug.dylib"
+          echo "Inspecting $binary"
+
+          undefined=$(nm -u "$binary" | grep -c LineSDKObjC || true)
+          if [ "$undefined" != "0" ]; then
+            echo "::error::$undefined LineSDKObjC symbols are still undefined in the app binary"
+            exit 1
+          fi
+          if ! nm "$binary" | grep -q '_OBJC_CLASS_\$__TtC11LineSDKObjC19LineSDKLoginManager'; then
+            echo "::error::LineSDKObjC was not linked into the app at all"
+            exit 1
+          fi
+          echo "LineSDKObjC linked into the app as expected"

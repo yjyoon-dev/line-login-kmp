@@ -1,0 +1,212 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <line-login-kmp:lineloginkmp>
+final enum class dev.yjyoon.lineloginkmp/LineBotPrompt : kotlin/Enum<dev.yjyoon.lineloginkmp/LineBotPrompt> { // dev.yjyoon.lineloginkmp/LineBotPrompt|null[0]
+    enum entry Aggressive // dev.yjyoon.lineloginkmp/LineBotPrompt.Aggressive|null[0]
+    enum entry Normal // dev.yjyoon.lineloginkmp/LineBotPrompt.Normal|null[0]
+
+    final val entries // dev.yjyoon.lineloginkmp/LineBotPrompt.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yjyoon.lineloginkmp/LineBotPrompt> // dev.yjyoon.lineloginkmp/LineBotPrompt.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yjyoon.lineloginkmp/LineBotPrompt // dev.yjyoon.lineloginkmp/LineBotPrompt.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yjyoon.lineloginkmp/LineBotPrompt> // dev.yjyoon.lineloginkmp/LineBotPrompt.values|values#static(){}[0]
+}
+
+final enum class dev.yjyoon.lineloginkmp/LineLoginErrorCode : kotlin/Enum<dev.yjyoon.lineloginkmp/LineLoginErrorCode> { // dev.yjyoon.lineloginkmp/LineLoginErrorCode|null[0]
+    enum entry Authentication // dev.yjyoon.lineloginkmp/LineLoginErrorCode.Authentication|null[0]
+    enum entry Internal // dev.yjyoon.lineloginkmp/LineLoginErrorCode.Internal|null[0]
+    enum entry LineAppUnavailable // dev.yjyoon.lineloginkmp/LineLoginErrorCode.LineAppUnavailable|null[0]
+    enum entry LoginInProgress // dev.yjyoon.lineloginkmp/LineLoginErrorCode.LoginInProgress|null[0]
+    enum entry Network // dev.yjyoon.lineloginkmp/LineLoginErrorCode.Network|null[0]
+    enum entry NotConfigured // dev.yjyoon.lineloginkmp/LineLoginErrorCode.NotConfigured|null[0]
+    enum entry Server // dev.yjyoon.lineloginkmp/LineLoginErrorCode.Server|null[0]
+
+    final val entries // dev.yjyoon.lineloginkmp/LineLoginErrorCode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yjyoon.lineloginkmp/LineLoginErrorCode> // dev.yjyoon.lineloginkmp/LineLoginErrorCode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yjyoon.lineloginkmp/LineLoginErrorCode // dev.yjyoon.lineloginkmp/LineLoginErrorCode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yjyoon.lineloginkmp/LineLoginErrorCode> // dev.yjyoon.lineloginkmp/LineLoginErrorCode.values|values#static(){}[0]
+}
+
+sealed interface dev.yjyoon.lineloginkmp/LineLoginResult { // dev.yjyoon.lineloginkmp/LineLoginResult|null[0]
+    final class Failure : dev.yjyoon.lineloginkmp/LineLoginResult { // dev.yjyoon.lineloginkmp/LineLoginResult.Failure|null[0]
+        constructor <init>(dev.yjyoon.lineloginkmp/LineLoginErrorCode, kotlin/String, kotlin/String? = ..., kotlin/String? = ...) // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.<init>|<init>(dev.yjyoon.lineloginkmp.LineLoginErrorCode;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+        final val code // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.code|{}code[0]
+            final fun <get-code>(): dev.yjyoon.lineloginkmp/LineLoginErrorCode // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.code.<get-code>|<get-code>(){}[0]
+        final val message // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.message|{}message[0]
+            final fun <get-message>(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.message.<get-message>|<get-message>(){}[0]
+        final val rawCode // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.rawCode|{}rawCode[0]
+            final fun <get-rawCode>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.rawCode.<get-rawCode>|<get-rawCode>(){}[0]
+        final val rawMessage // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.rawMessage|{}rawMessage[0]
+            final fun <get-rawMessage>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+
+        final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginResult.Failure.toString|toString(){}[0]
+    }
+
+    final class Success : dev.yjyoon.lineloginkmp/LineLoginResult { // dev.yjyoon.lineloginkmp/LineLoginResult.Success|null[0]
+        constructor <init>(dev.yjyoon.lineloginkmp/LineAccessToken, dev.yjyoon.lineloginkmp/LineProfile?, dev.yjyoon.lineloginkmp/LineIdToken?, kotlin/Boolean, kotlin/String?) // dev.yjyoon.lineloginkmp/LineLoginResult.Success.<init>|<init>(dev.yjyoon.lineloginkmp.LineAccessToken;dev.yjyoon.lineloginkmp.LineProfile?;dev.yjyoon.lineloginkmp.LineIdToken?;kotlin.Boolean;kotlin.String?){}[0]
+
+        final val accessToken // dev.yjyoon.lineloginkmp/LineLoginResult.Success.accessToken|{}accessToken[0]
+            final fun <get-accessToken>(): dev.yjyoon.lineloginkmp/LineAccessToken // dev.yjyoon.lineloginkmp/LineLoginResult.Success.accessToken.<get-accessToken>|<get-accessToken>(){}[0]
+        final val friendshipStatusChanged // dev.yjyoon.lineloginkmp/LineLoginResult.Success.friendshipStatusChanged|{}friendshipStatusChanged[0]
+            final fun <get-friendshipStatusChanged>(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLoginResult.Success.friendshipStatusChanged.<get-friendshipStatusChanged>|<get-friendshipStatusChanged>(){}[0]
+        final val idToken // dev.yjyoon.lineloginkmp/LineLoginResult.Success.idToken|{}idToken[0]
+            final fun <get-idToken>(): dev.yjyoon.lineloginkmp/LineIdToken? // dev.yjyoon.lineloginkmp/LineLoginResult.Success.idToken.<get-idToken>|<get-idToken>(){}[0]
+        final val nonce // dev.yjyoon.lineloginkmp/LineLoginResult.Success.nonce|{}nonce[0]
+            final fun <get-nonce>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginResult.Success.nonce.<get-nonce>|<get-nonce>(){}[0]
+        final val profile // dev.yjyoon.lineloginkmp/LineLoginResult.Success.profile|{}profile[0]
+            final fun <get-profile>(): dev.yjyoon.lineloginkmp/LineProfile? // dev.yjyoon.lineloginkmp/LineLoginResult.Success.profile.<get-profile>|<get-profile>(){}[0]
+
+        final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginResult.Success.toString|toString(){}[0]
+    }
+
+    final object Cancelled : dev.yjyoon.lineloginkmp/LineLoginResult { // dev.yjyoon.lineloginkmp/LineLoginResult.Cancelled|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLoginResult.Cancelled.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yjyoon.lineloginkmp/LineLoginResult.Cancelled.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginResult.Cancelled.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.yjyoon.lineloginkmp/LineLogoutResult { // dev.yjyoon.lineloginkmp/LineLogoutResult|null[0]
+    final class Failure : dev.yjyoon.lineloginkmp/LineLogoutResult { // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure|null[0]
+        constructor <init>(dev.yjyoon.lineloginkmp/LineLoginErrorCode, kotlin/String, kotlin/String? = ..., kotlin/String? = ...) // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.<init>|<init>(dev.yjyoon.lineloginkmp.LineLoginErrorCode;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+        final val code // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.code|{}code[0]
+            final fun <get-code>(): dev.yjyoon.lineloginkmp/LineLoginErrorCode // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.code.<get-code>|<get-code>(){}[0]
+        final val message // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.message|{}message[0]
+            final fun <get-message>(): kotlin/String // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.message.<get-message>|<get-message>(){}[0]
+        final val rawCode // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.rawCode|{}rawCode[0]
+            final fun <get-rawCode>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.rawCode.<get-rawCode>|<get-rawCode>(){}[0]
+        final val rawMessage // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.rawMessage|{}rawMessage[0]
+            final fun <get-rawMessage>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+
+        final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLogoutResult.Failure.toString|toString(){}[0]
+    }
+
+    final object Success : dev.yjyoon.lineloginkmp/LineLogoutResult { // dev.yjyoon.lineloginkmp/LineLogoutResult.Success|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogoutResult.Success.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yjyoon.lineloginkmp/LineLogoutResult.Success.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLogoutResult.Success.toString|toString(){}[0]
+    }
+}
+
+final class dev.yjyoon.lineloginkmp/LineAccessToken { // dev.yjyoon.lineloginkmp/LineAccessToken|null[0]
+    constructor <init>(kotlin/String, kotlin/Long) // dev.yjyoon.lineloginkmp/LineAccessToken.<init>|<init>(kotlin.String;kotlin.Long){}[0]
+
+    final val expiresAtEpochMilliseconds // dev.yjyoon.lineloginkmp/LineAccessToken.expiresAtEpochMilliseconds|{}expiresAtEpochMilliseconds[0]
+        final fun <get-expiresAtEpochMilliseconds>(): kotlin/Long // dev.yjyoon.lineloginkmp/LineAccessToken.expiresAtEpochMilliseconds.<get-expiresAtEpochMilliseconds>|<get-expiresAtEpochMilliseconds>(){}[0]
+    final val value // dev.yjyoon.lineloginkmp/LineAccessToken.value|{}value[0]
+        final fun <get-value>(): kotlin/String // dev.yjyoon.lineloginkmp/LineAccessToken.value.<get-value>|<get-value>(){}[0]
+
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineAccessToken.toString|toString(){}[0]
+}
+
+final class dev.yjyoon.lineloginkmp/LineIdToken { // dev.yjyoon.lineloginkmp/LineIdToken|null[0]
+    constructor <init>(kotlin/String, kotlin/String?, kotlin/String?, kotlin/String?, kotlin/String?, kotlin/String?) // dev.yjyoon.lineloginkmp/LineIdToken.<init>|<init>(kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+
+    final val email // dev.yjyoon.lineloginkmp/LineIdToken.email|{}email[0]
+        final fun <get-email>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineIdToken.email.<get-email>|<get-email>(){}[0]
+    final val name // dev.yjyoon.lineloginkmp/LineIdToken.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineIdToken.name.<get-name>|<get-name>(){}[0]
+    final val nonce // dev.yjyoon.lineloginkmp/LineIdToken.nonce|{}nonce[0]
+        final fun <get-nonce>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineIdToken.nonce.<get-nonce>|<get-nonce>(){}[0]
+    final val pictureUrl // dev.yjyoon.lineloginkmp/LineIdToken.pictureUrl|{}pictureUrl[0]
+        final fun <get-pictureUrl>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineIdToken.pictureUrl.<get-pictureUrl>|<get-pictureUrl>(){}[0]
+    final val rawValue // dev.yjyoon.lineloginkmp/LineIdToken.rawValue|{}rawValue[0]
+        final fun <get-rawValue>(): kotlin/String // dev.yjyoon.lineloginkmp/LineIdToken.rawValue.<get-rawValue>|<get-rawValue>(){}[0]
+    final val subject // dev.yjyoon.lineloginkmp/LineIdToken.subject|{}subject[0]
+        final fun <get-subject>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineIdToken.subject.<get-subject>|<get-subject>(){}[0]
+
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineIdToken.toString|toString(){}[0]
+}
+
+final class dev.yjyoon.lineloginkmp/LineLoginConfig { // dev.yjyoon.lineloginkmp/LineLoginConfig|null[0]
+    constructor <init>(kotlin/String, kotlin/String? = ...) // dev.yjyoon.lineloginkmp/LineLoginConfig.<init>|<init>(kotlin.String;kotlin.String?){}[0]
+
+    final val channelId // dev.yjyoon.lineloginkmp/LineLoginConfig.channelId|{}channelId[0]
+        final fun <get-channelId>(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginConfig.channelId.<get-channelId>|<get-channelId>(){}[0]
+    final val universalLinkUrl // dev.yjyoon.lineloginkmp/LineLoginConfig.universalLinkUrl|{}universalLinkUrl[0]
+        final fun <get-universalLinkUrl>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginConfig.universalLinkUrl.<get-universalLinkUrl>|<get-universalLinkUrl>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLoginConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yjyoon.lineloginkmp/LineLoginConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginConfig.toString|toString(){}[0]
+}
+
+final class dev.yjyoon.lineloginkmp/LineLoginRequest { // dev.yjyoon.lineloginkmp/LineLoginRequest|null[0]
+    constructor <init>(kotlin.collections/Set<dev.yjyoon.lineloginkmp/LineScope> = ..., kotlin/String? = ..., kotlin/Boolean = ..., dev.yjyoon.lineloginkmp/LineBotPrompt? = ..., kotlin/String? = ...) // dev.yjyoon.lineloginkmp/LineLoginRequest.<init>|<init>(kotlin.collections.Set<dev.yjyoon.lineloginkmp.LineScope>;kotlin.String?;kotlin.Boolean;dev.yjyoon.lineloginkmp.LineBotPrompt?;kotlin.String?){}[0]
+
+    final val botPrompt // dev.yjyoon.lineloginkmp/LineLoginRequest.botPrompt|{}botPrompt[0]
+        final fun <get-botPrompt>(): dev.yjyoon.lineloginkmp/LineBotPrompt? // dev.yjyoon.lineloginkmp/LineLoginRequest.botPrompt.<get-botPrompt>|<get-botPrompt>(){}[0]
+    final val forceWebLogin // dev.yjyoon.lineloginkmp/LineLoginRequest.forceWebLogin|{}forceWebLogin[0]
+        final fun <get-forceWebLogin>(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLoginRequest.forceWebLogin.<get-forceWebLogin>|<get-forceWebLogin>(){}[0]
+    final val nonce // dev.yjyoon.lineloginkmp/LineLoginRequest.nonce|{}nonce[0]
+        final fun <get-nonce>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginRequest.nonce.<get-nonce>|<get-nonce>(){}[0]
+    final val promptBotId // dev.yjyoon.lineloginkmp/LineLoginRequest.promptBotId|{}promptBotId[0]
+        final fun <get-promptBotId>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineLoginRequest.promptBotId.<get-promptBotId>|<get-promptBotId>(){}[0]
+    final val scopes // dev.yjyoon.lineloginkmp/LineLoginRequest.scopes|{}scopes[0]
+        final fun <get-scopes>(): kotlin.collections/Set<dev.yjyoon.lineloginkmp/LineScope> // dev.yjyoon.lineloginkmp/LineLoginRequest.scopes.<get-scopes>|<get-scopes>(){}[0]
+
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineLoginRequest.toString|toString(){}[0]
+
+    final object Companion { // dev.yjyoon.lineloginkmp/LineLoginRequest.Companion|null[0]
+        final val DefaultScopes // dev.yjyoon.lineloginkmp/LineLoginRequest.Companion.DefaultScopes|{}DefaultScopes[0]
+            final fun <get-DefaultScopes>(): kotlin.collections/Set<dev.yjyoon.lineloginkmp/LineScope> // dev.yjyoon.lineloginkmp/LineLoginRequest.Companion.DefaultScopes.<get-DefaultScopes>|<get-DefaultScopes>(){}[0]
+    }
+}
+
+final class dev.yjyoon.lineloginkmp/LineProfile { // dev.yjyoon.lineloginkmp/LineProfile|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String?, kotlin/String?) // dev.yjyoon.lineloginkmp/LineProfile.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+    final val displayName // dev.yjyoon.lineloginkmp/LineProfile.displayName|{}displayName[0]
+        final fun <get-displayName>(): kotlin/String // dev.yjyoon.lineloginkmp/LineProfile.displayName.<get-displayName>|<get-displayName>(){}[0]
+    final val pictureUrl // dev.yjyoon.lineloginkmp/LineProfile.pictureUrl|{}pictureUrl[0]
+        final fun <get-pictureUrl>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineProfile.pictureUrl.<get-pictureUrl>|<get-pictureUrl>(){}[0]
+    final val statusMessage // dev.yjyoon.lineloginkmp/LineProfile.statusMessage|{}statusMessage[0]
+        final fun <get-statusMessage>(): kotlin/String? // dev.yjyoon.lineloginkmp/LineProfile.statusMessage.<get-statusMessage>|<get-statusMessage>(){}[0]
+    final val userId // dev.yjyoon.lineloginkmp/LineProfile.userId|{}userId[0]
+        final fun <get-userId>(): kotlin/String // dev.yjyoon.lineloginkmp/LineProfile.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineProfile.toString|toString(){}[0]
+}
+
+final class dev.yjyoon.lineloginkmp/LineScope { // dev.yjyoon.lineloginkmp/LineScope|null[0]
+    constructor <init>(kotlin/String) // dev.yjyoon.lineloginkmp/LineScope.<init>|<init>(kotlin.String){}[0]
+
+    final val code // dev.yjyoon.lineloginkmp/LineScope.code|{}code[0]
+        final fun <get-code>(): kotlin/String // dev.yjyoon.lineloginkmp/LineScope.code.<get-code>|<get-code>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineScope.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yjyoon.lineloginkmp/LineScope.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp/LineScope.toString|toString(){}[0]
+
+    final object Companion { // dev.yjyoon.lineloginkmp/LineScope.Companion|null[0]
+        final val Email // dev.yjyoon.lineloginkmp/LineScope.Companion.Email|{}Email[0]
+            final fun <get-Email>(): dev.yjyoon.lineloginkmp/LineScope // dev.yjyoon.lineloginkmp/LineScope.Companion.Email.<get-Email>|<get-Email>(){}[0]
+        final val OpenId // dev.yjyoon.lineloginkmp/LineScope.Companion.OpenId|{}OpenId[0]
+            final fun <get-OpenId>(): dev.yjyoon.lineloginkmp/LineScope // dev.yjyoon.lineloginkmp/LineScope.Companion.OpenId.<get-OpenId>|<get-OpenId>(){}[0]
+        final val Profile // dev.yjyoon.lineloginkmp/LineScope.Companion.Profile|{}Profile[0]
+            final fun <get-Profile>(): dev.yjyoon.lineloginkmp/LineScope // dev.yjyoon.lineloginkmp/LineScope.Companion.Profile.<get-Profile>|<get-Profile>(){}[0]
+    }
+}
+
+final object dev.yjyoon.lineloginkmp/LineLogin { // dev.yjyoon.lineloginkmp/LineLogin|null[0]
+    final val isConfigured // dev.yjyoon.lineloginkmp/LineLogin.isConfigured|{}isConfigured[0]
+        final fun <get-isConfigured>(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogin.isConfigured.<get-isConfigured>|<get-isConfigured>(){}[0]
+
+    final fun configure(dev.yjyoon.lineloginkmp/LineLoginConfig) // dev.yjyoon.lineloginkmp/LineLogin.configure|configure(dev.yjyoon.lineloginkmp.LineLoginConfig){}[0]
+    final suspend fun currentAccessToken(): dev.yjyoon.lineloginkmp/LineAccessToken? // dev.yjyoon.lineloginkmp/LineLogin.currentAccessToken|currentAccessToken(){}[0]
+    final suspend fun isLoggedIn(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogin.isLoggedIn|isLoggedIn(){}[0]
+    final suspend fun login(dev.yjyoon.lineloginkmp/LineLoginRequest = ...): dev.yjyoon.lineloginkmp/LineLoginResult // dev.yjyoon.lineloginkmp/LineLogin.login|login(dev.yjyoon.lineloginkmp.LineLoginRequest){}[0]
+    final suspend fun logout(): dev.yjyoon.lineloginkmp/LineLogoutResult // dev.yjyoon.lineloginkmp/LineLogin.logout|logout(){}[0]
+}
+
+final object dev.yjyoon.lineloginkmp/LineLoginUrlHandler { // dev.yjyoon.lineloginkmp/LineLoginUrlHandler|null[0]
+    final fun handle(platform.Foundation/NSURL): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLoginUrlHandler.handle|handle(platform.Foundation.NSURL){}[0]
+}

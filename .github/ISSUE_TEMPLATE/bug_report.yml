@@ -1,0 +1,49 @@
+name: Bug report
+description: Something does not work
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: the README's [Troubleshooting](https://github.com/yjyoon-dev/line-login-kmp#-troubleshooting)
+        table is keyed by the exact symptom, and covers the setup mistakes that account for most
+        reports — a missing `export(...)`, the wrong SPM product, or a channel that is not published.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: Include the full error or the `LineLoginResult.Failure` you got, with its `rawCode` and `rawMessage`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options: [ Android, iOS ]
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: line-login-kmp, Kotlin, and either Android API level or iOS version.
+      placeholder: "line-login-kmp 0.1.0, Kotlin 2.4.0, iOS 18.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Ideally as a diff against the sample app.

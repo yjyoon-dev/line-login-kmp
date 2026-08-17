@@ -1,0 +1,188 @@
+/*
+ * Copyright 2026 yjyoon
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package dev.yjyoon.lineloginkmp.sample
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.yjyoon.lineloginkmp.LineLogin
+import dev.yjyoon.lineloginkmp.LineLoginResult
+import dev.yjyoon.lineloginkmp.LineLogoutResult
+import kotlinx.coroutines.launch
+
+/**
+ * The entire sample: configure once, call `login()`, render whatever comes back.
+ *
+ * Deliberately one file and no architecture — every line here is either the library's API or the
+ * least Compose needed to show its result.
+ */
+@Composable
+fun App() {
+    MaterialTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            var status by remember { mutableStateOf("Not signed in") }
+            var busy by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(24.dp)
+                        .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Text(
+                    text = "line-login-kmp",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Button(
+                    onClick = {
+                        scope.launch {
+                            busy = true
+                            status = describe(LineLogin.login())
+                            busy = false
+                        }
+                    },
+                    enabled = !busy,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = LineGreen),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (busy) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                        )
+                    } else {
+                        Text("Log in with LINE", color = Color.White)
+                    }
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            busy = true
+                            status =
+                                when (val result = LineLogin.logout()) {
+                                    LineLogoutResult.Success -> "Signed out"
+                                    is LineLogoutResult.Failure ->
+                                        "Signed out locally, but LINE was not told: ${result.message}"
+                                }
+                            busy = false
+                        }
+                    },
+                    enabled = !busy,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Log out")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            val token = LineLogin.currentAccessToken()
+                            status =
+                                if (token == null) {
+                                    "No stored token"
+                                } else {
+                                    "Stored token expires at ${token.expiresAtEpochMilliseconds}"
+                                }
+                        }
+                    },
+                    enabled = !busy,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Check stored token")
+                }
+
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                ) {
+                    Text(
+                        text = status,
+                        modifier = Modifier.background(Color.Transparent).padding(16.dp),
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 13.sp,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun describe(result: LineLoginResult): String =
+    when (result) {
+        is LineLoginResult.Success ->
+            buildString {
+                appendLine("Signed in")
+                appendLine("userId: ${result.profile?.userId}")
+                appendLine("displayName: ${result.profile?.displayName}")
+                appendLine("pictureUrl: ${result.profile?.pictureUrl}")
+                appendLine("idToken: ${if (result.idToken == null) "none" else "present"}")
+                appendLine("email: ${result.idToken?.email ?: "not granted"}")
+                append("expiresAt: ${result.accessToken.expiresAtEpochMilliseconds}")
+            }
+
+        // Nothing went wrong — the user simply changed their mind.
+        LineLoginResult.Cancelled -> "Cancelled"
+
+        is LineLoginResult.Failure ->
+            buildString {
+                appendLine("Failed: ${result.code}")
+                appendLine(result.message)
+                append("raw: ${result.rawCode} / ${result.rawMessage}")
+            }
+    }
+
+private val LineGreen = Color(0xFF06C755)

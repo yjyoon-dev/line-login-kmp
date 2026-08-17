@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Merged into the consumer's manifest. Apps integrating this library declare nothing. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+
+        <!--
+          Headless translucent proxy that owns the startActivityForResult contract for LINE Login.
+          See LineLoginProxyActivity for why it exists; the class name is effectively public API,
+          because it lands in every consumer's merged manifest.
+
+          What is ABSENT here is load-bearing:
+
+            android:noHistory          would finish this Activity the moment it backgrounds — and
+                                       it backgrounds as soon as LINE's screen appears — so the
+                                       result would never be delivered.
+
+            android:taskAffinity=""    the LINE SDK requires its auth Activity to stack inside the
+            launchMode singleTask      caller's task, and LINE's own docs state the calling
+                       singleInstance  Activity must not be singleInstance or the result is lost.
+
+            android:screenOrientation  API 26+ throws when a translucent Activity requests a fixed
+                                       orientation, and this one is translucent by definition.
+
+          The LINE AAR already merges in LineAuthenticationActivity,
+          LineAuthenticationCallbackActivity (scheme "lineauth") and its Android 11+ <queries>
+          block, so none of that is redeclared here.
+        -->
+        <activity
+            android:name="dev.yjyoon.lineloginkmp.internal.LineLoginProxyActivity"
+            android:exported="false"
+            android:launchMode="standard"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|density|uiMode|layoutDirection|fontScale"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!--
+          Captures the application Context at startup so that LineLogin.configure() can be called
+          from shared code with no Android types in its signature. tools:node="merge" keeps this
+          compatible with every other androidx.startup initializer in the app.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="dev.yjyoon.lineloginkmp.internal.LineLoginInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
+</manifest>

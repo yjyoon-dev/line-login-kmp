@@ -1,0 +1,163 @@
+public final class dev/yjyoon/lineloginkmp/LineAccessToken {
+	public fun <init> (Ljava/lang/String;J)V
+	public final fun getExpiresAtEpochMilliseconds ()J
+	public final fun getValue ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineBotPrompt : java/lang/Enum {
+	public static final field Aggressive Ldev/yjyoon/lineloginkmp/LineBotPrompt;
+	public static final field Normal Ldev/yjyoon/lineloginkmp/LineBotPrompt;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yjyoon/lineloginkmp/LineBotPrompt;
+	public static fun values ()[Ldev/yjyoon/lineloginkmp/LineBotPrompt;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineIdToken {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getNonce ()Ljava/lang/String;
+	public final fun getPictureUrl ()Ljava/lang/String;
+	public final fun getRawValue ()Ljava/lang/String;
+	public final fun getSubject ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLogin {
+	public static final field INSTANCE Ldev/yjyoon/lineloginkmp/LineLogin;
+	public final fun configure (Ldev/yjyoon/lineloginkmp/LineLoginConfig;)V
+	public final fun currentAccessToken (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isConfigured ()Z
+	public final fun isLoggedIn (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun login (Ldev/yjyoon/lineloginkmp/LineLoginRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun login$default (Ldev/yjyoon/lineloginkmp/LineLogin;Ldev/yjyoon/lineloginkmp/LineLoginRequest;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun logout (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginAndroidKt {
+	public static final fun configure (Ldev/yjyoon/lineloginkmp/LineLogin;Landroid/content/Context;Ldev/yjyoon/lineloginkmp/LineLoginConfig;)V
+	public static final fun isLineAppInstalled (Ldev/yjyoon/lineloginkmp/LineLogin;Landroid/content/Context;)Z
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginConfig {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChannelId ()Ljava/lang/String;
+	public final fun getUniversalLinkUrl ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginErrorCode : java/lang/Enum {
+	public static final field Authentication Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field Internal Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field LineAppUnavailable Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field LoginInProgress Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field Network Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field NotConfigured Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static final field Server Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public static fun values ()[Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginRequest {
+	public static final field Companion Ldev/yjyoon/lineloginkmp/LineLoginRequest$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Set;Ljava/lang/String;ZLdev/yjyoon/lineloginkmp/LineBotPrompt;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/Set;Ljava/lang/String;ZLdev/yjyoon/lineloginkmp/LineBotPrompt;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBotPrompt ()Ldev/yjyoon/lineloginkmp/LineBotPrompt;
+	public final fun getForceWebLogin ()Z
+	public final fun getNonce ()Ljava/lang/String;
+	public final fun getPromptBotId ()Ljava/lang/String;
+	public final fun getScopes ()Ljava/util/Set;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginRequest$Companion {
+	public final fun getDefaultScopes ()Ljava/util/Set;
+}
+
+public abstract interface class dev/yjyoon/lineloginkmp/LineLoginResult {
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginResult$Cancelled : dev/yjyoon/lineloginkmp/LineLoginResult {
+	public static final field INSTANCE Ldev/yjyoon/lineloginkmp/LineLoginResult$Cancelled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginResult$Failure : dev/yjyoon/lineloginkmp/LineLoginResult {
+	public fun <init> (Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCode ()Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getRawCode ()Ljava/lang/String;
+	public final fun getRawMessage ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLoginResult$Success : dev/yjyoon/lineloginkmp/LineLoginResult {
+	public fun <init> (Ldev/yjyoon/lineloginkmp/LineAccessToken;Ldev/yjyoon/lineloginkmp/LineProfile;Ldev/yjyoon/lineloginkmp/LineIdToken;ZLjava/lang/String;)V
+	public final fun getAccessToken ()Ldev/yjyoon/lineloginkmp/LineAccessToken;
+	public final fun getFriendshipStatusChanged ()Z
+	public final fun getIdToken ()Ldev/yjyoon/lineloginkmp/LineIdToken;
+	public final fun getNonce ()Ljava/lang/String;
+	public final fun getProfile ()Ldev/yjyoon/lineloginkmp/LineProfile;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yjyoon/lineloginkmp/LineLogoutResult {
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLogoutResult$Failure : dev/yjyoon/lineloginkmp/LineLogoutResult {
+	public fun <init> (Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCode ()Ldev/yjyoon/lineloginkmp/LineLoginErrorCode;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getRawCode ()Ljava/lang/String;
+	public final fun getRawMessage ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineLogoutResult$Success : dev/yjyoon/lineloginkmp/LineLogoutResult {
+	public static final field INSTANCE Ldev/yjyoon/lineloginkmp/LineLogoutResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineProfile {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getDisplayName ()Ljava/lang/String;
+	public final fun getPictureUrl ()Ljava/lang/String;
+	public final fun getStatusMessage ()Ljava/lang/String;
+	public final fun getUserId ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineScope {
+	public static final field Companion Ldev/yjyoon/lineloginkmp/LineScope$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yjyoon/lineloginkmp/LineScope$Companion {
+	public final fun getEmail ()Ldev/yjyoon/lineloginkmp/LineScope;
+	public final fun getOpenId ()Ldev/yjyoon/lineloginkmp/LineScope;
+	public final fun getProfile ()Ldev/yjyoon/lineloginkmp/LineScope;
+}
+
+public final class dev/yjyoon/lineloginkmp/internal/LineLoginInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)V
+	public fun dependencies ()Ljava/util/List;
+}
+

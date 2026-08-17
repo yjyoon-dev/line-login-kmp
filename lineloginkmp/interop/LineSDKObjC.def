@@ -1,0 +1,13 @@
+# cinterop definition for the LINE iOS SDK's Objective-C compatibility layer.
+#
+# The SDK's main module is pure Swift, which Kotlin/Native cannot import — interop goes through
+# Objective-C only. LineSDKObjC is the same SDK behind an @objc facade, which Kotlin/Native can
+# import. That is what makes this library work without any Swift glue in the consumer's app.
+#
+# `modules` (rather than `headers`) is deliberate: cinterop reads the framework's module map, so
+# the generated bindings carry the Swift runtime class names (_TtC11LineSDKObjC…) that the
+# consumer's app resolves at link time. The framework is supplied through -F by the
+# `downloadLineSdkObjC` Gradle task, so no absolute path is recorded here or in the produced klib.
+language = Objective-C
+modules = LineSDKObjC
+package = dev.yjyoon.lineloginkmp.internal.linesdk

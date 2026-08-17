@@ -1,0 +1,21 @@
+*.iml
+.gradle
+.idea
+.DS_Store
+build
+bin
+captures
+.externalNativeBuild
+.cxx
+local.properties
+xcuserdata
+.kotlin
+*.gpg
+
+# Xcode / SPM
+sample/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/.build
+sample/iosApp/iosApp.xcworkspace
+sample/iosApp/build
+
+# Real channel IDs are per-developer; the sample reads this file and falls back to a placeholder.
+sample/local.properties
