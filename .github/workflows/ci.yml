@@ -100,12 +100,19 @@ jobs:
           [ -f "$binary.debug.dylib" ] && binary="$binary.debug.dylib"
           echo "Inspecting $binary"
 
-          undefined=$(nm -u "$binary" | grep -c LineSDKObjC || true)
+          # Dumped to a file rather than piped: `grep -q` closes the pipe on its first match, and
+          # LLVM's nm treats that as a fatal write error ("IO failure on output stream: Broken
+          # pipe"), which pipefail then reports as a failed check on a perfectly linked binary.
+          nm "$binary" > "$RUNNER_TEMP/symbols.txt"
+          nm -u "$binary" > "$RUNNER_TEMP/undefined.txt"
+
+          undefined=$(grep -c LineSDKObjC "$RUNNER_TEMP/undefined.txt" || true)
           if [ "$undefined" != "0" ]; then
             echo "::error::$undefined LineSDKObjC symbols are still undefined in the app binary"
+            grep LineSDKObjC "$RUNNER_TEMP/undefined.txt" || true
             exit 1
           fi
-          if ! nm "$binary" | grep -q '_OBJC_CLASS_\$__TtC11LineSDKObjC19LineSDKLoginManager'; then
+          if ! grep -F -q '_OBJC_CLASS_$__TtC11LineSDKObjC19LineSDKLoginManager' "$RUNNER_TEMP/symbols.txt"; then
             echo "::error::LineSDKObjC was not linked into the app at all"
             exit 1
           fi
