@@ -34,9 +34,14 @@ lineloginkmp/                 the published library
     ├── commonTest/           value types and both error tables
     ├── androidHostTest/      mapping against real LINE SDK objects, and the request bus
     └── iosTest/              the cinterop link smoke test
+lineloginkmp-compose/         optional second artifact: the Compose login button
+└── src/commonMain/           LineLoginButton, LINE's palette, geometry, caption table
 sample/                       Compose Multiplatform app; also the iOS integration gate
 gradle-conventions/           publishing and formatting convention plugins
 ```
+
+Each published module carries its own `gradle.properties` with `POM_ARTIFACT_ID` / `POM_NAME` /
+`POM_DESCRIPTION`; everything else about the POM lives in the root one.
 
 Two rules keep the two platforms honest:
 
@@ -62,14 +67,20 @@ Before "cleaning up" any of these, read the comment above them:
   in every consumer's merged manifest. Renaming it is a breaking change.
 - Kotlin **file names** in `iosMain` are part of the Swift-facing API surface for anything exported
   as a file facade. `LineLoginUrlHandler` is an `object` precisely so it does not depend on one.
+- `LineLoginButtonColors` has no way to override its values, and that is the point: LINE's
+  [button guidelines](https://developers.line.biz/en/docs/line-login/login-button/) permit exactly
+  those colours. Anything that makes a non-compliant button easy to build is a regression.
+- Neither the library nor the sample bundles the LINE icon. Downloading LINE's template is how a
+  developer accepts the usage guidelines that come with the mark, so it stays a parameter — and the
+  sample draws a plainly-labelled placeholder instead.
 
 ## Before you open a pull request
 
 ```bash
-./gradlew spotlessApply                  # formatting and licence headers
-./gradlew :lineloginkmp:allTests         # unit tests, including the iOS link test
-./gradlew :lineloginkmp:checkKotlinAbi   # public API is unchanged…
-./gradlew :lineloginkmp:updateKotlinAbi  # …or update the dump deliberately, and say so in the PR
+./gradlew spotlessApply     # formatting and licence headers
+./gradlew allTests          # unit tests, including the iOS cinterop link test
+./gradlew checkKotlinAbi    # public API is unchanged…
+./gradlew updateKotlinAbi   # …or update the dumps deliberately, and say so in the PR
 ```
 
 If you touched anything under `iosMain`, build the sample too — it is the only thing that proves a

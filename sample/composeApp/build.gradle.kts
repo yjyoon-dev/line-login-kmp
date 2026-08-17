@@ -51,16 +51,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            // Accessor on purpose: material3 has its own version line, which this resolves.
             implementation(compose.material3)
 
             // `api`, not `implementation`: required for export(...) above to have anything to
             // export. Gradle fails the build with an explicit message otherwise.
             api(project(":lineloginkmp"))
+            implementation(project(":lineloginkmp-compose"))
         }
         androidMain.dependencies {
-            implementation(compose.uiTooling)
+            implementation(libs.compose.ui.tooling)
             implementation(libs.androidx.activity.compose)
         }
     }

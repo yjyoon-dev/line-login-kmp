@@ -37,6 +37,8 @@ LINE is not installed, and token storage.
   screen stays until the user dismisses it ([why](#-design-notes)).
 - **No wrapper of your session.** Both SDKs already persist and refresh their own tokens. This
   library adds no second copy of that state.
+- **A compliant login button, optional.** [`lineloginkmp-compose`](#-login-button) implements LINE's
+  button design guidelines so you do not have to re-derive them from a PSD.
 
 ## 📋 Requirements
 
@@ -62,6 +64,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("dev.yjyoon.lineloginkmp:lineloginkmp:0.1.0")
+
+            // Optional: a Compose Multiplatform login button that follows LINE's design
+            // guidelines. Skip it if you would rather build the login button yourself.
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:0.1.0")
         }
     }
 }
@@ -223,6 +229,56 @@ func application(_ app: UIApplication, continue userActivity: NSUserActivity, �
 The second one only matters when you configure `universalLinkUrl`, which is exactly what makes
 forgetting it fail intermittently.
 
+## 🟢 Login button
+
+**LINE requires login buttons to follow its
+[button design guidelines](https://developers.line.biz/en/docs/line-login/login-button/)** — the
+colours, the divider, the padding, the isolation zone and the caption are all specified, and
+"using a non-designated color" is called out as a mistake. Read them before you draw your own.
+
+`lineloginkmp-compose` implements them:
+
+```kotlin
+LineLoginButton(
+    lineIcon = painterResource(Res.drawable.line_icon),
+    onClick = { scope.launch { handle(LineLogin.login()) } },
+)
+```
+
+That gives you the exact palette including the hover and press overlays and the white disabled
+state, the divider between logo and caption, padding derived from the icon width, and a caption in
+LINE's own wording for the user's language — 18 of them, from LINE's table.
+
+```kotlin
+LineLoginButton(
+    lineIcon = painterResource(Res.drawable.line_icon),
+    onClick = ::signIn,
+    enabled = !busy,
+    text = LineLoginButtonText.current().short,   // "Log in" instead of "Log in with LINE"
+    iconSize = 32.dp,                             // scales the whole button
+)
+
+LineLoginButton(lineIcon = icon, onClick = ::signIn, text = null)   // icon only, also allowed
+```
+
+Scale the button through `iconSize`, not a fixed height: every other measurement is derived from it,
+so the icon's aspect ratio and the required padding hold at any size.
+
+`LineLoginButtonColors` and `LineLoginButtonDefaults` are public, so an app drawing its own button —
+in Android Views or SwiftUI — can still take the exact values.
+
+### You supply the icon
+
+`lineIcon` has no default, and this library ships no LINE artwork. Download LINE's
+[button template](https://vos.line-scdn.net/line-developers/docs/media/line-login/login-button/LINE_Login_Button_Image.zip)
+— doing so is how you accept the
+[usage guidelines](https://terms2.line.me/LINE_Developers_Guidelines_for_Login_Button) attached to
+it, which nobody can do on your behalf — and use the **white** icon from it. The button tints the
+icon per state, so a white source is correct everywhere, including the grey disabled state.
+
+The isolation zone is the one rule the button cannot enforce from the inside: keep other content
+`LineLoginButtonDefaults.isolationZone()` away from it.
+
 ## 🛠️ API
 
 | Type | What it is |
@@ -238,6 +294,15 @@ forgetting it fail intermittently.
 | `LineIdToken` | The raw JWT plus locally decoded claims |
 | `LineAccessToken` | Token value and expiry |
 | `LineLoginUrlHandler` | iOS only. `handle(url:)` |
+
+From `dev.yjyoon.lineloginkmp:lineloginkmp-compose`:
+
+| Type | What it is |
+|---|---|
+| `LineLoginButton` | The [guideline-compliant button](#-login-button) |
+| `LineLoginButtonColors` | LINE's exact palette, including the state overlays |
+| `LineLoginButtonDefaults` | Geometry and typography, all derived from the icon width |
+| `LineLoginButtonText` | LINE's recommended captions in 18 languages, resolved by locale |
 
 <a name="result-model"></a>
 

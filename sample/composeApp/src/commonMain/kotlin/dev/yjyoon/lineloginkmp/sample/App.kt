@@ -26,9 +26,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -42,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import dev.yjyoon.lineloginkmp.LineLogin
 import dev.yjyoon.lineloginkmp.LineLoginResult
 import dev.yjyoon.lineloginkmp.LineLogoutResult
+import dev.yjyoon.lineloginkmp.compose.LineLoginButton
+import dev.yjyoon.lineloginkmp.compose.LineLoginButtonDefaults
 import kotlinx.coroutines.launch
 
 /**
@@ -73,7 +73,8 @@ fun App() {
                         .padding(24.dp)
                         .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                // At least the isolation zone the guidelines require around the login button.
+                verticalArrangement = Arrangement.spacedBy(LineLoginButtonDefaults.isolationZone() * 2),
             ) {
                 Text(
                     text = "line-login-kmp",
@@ -81,7 +82,15 @@ fun App() {
                     fontWeight = FontWeight.Bold,
                 )
 
-                Button(
+                // The login button comes from :lineloginkmp-compose, so its colours, divider,
+                // padding and caption already follow LINE's design guidelines. The caption defaults
+                // to LINE's own wording for the device's language.
+                //
+                // While a login is running the button is disabled rather than showing a spinner:
+                // the guidelines define a disabled state, and inventing a loading one would mean
+                // painting a colour they do not allow.
+                LineLoginButton(
+                    lineIcon = rememberVectorPainter(PlaceholderSpeechBubble),
                     onClick = {
                         scope.launch {
                             busy = true
@@ -90,20 +99,13 @@ fun App() {
                         }
                     },
                     enabled = !busy,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = LineGreen),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    if (busy) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp,
-                        )
-                    } else {
-                        Text("Log in with LINE", color = Color.White)
-                    }
-                }
+                )
+
+                Text(
+                    text = "↑ placeholder icon — use LINE's official template asset in a real app",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
 
                 OutlinedButton(
                     onClick = {
@@ -184,5 +186,3 @@ private fun describe(result: LineLoginResult): String =
                 append("raw: ${result.rawCode} / ${result.rawMessage}")
             }
     }
-
-private val LineGreen = Color(0xFF06C755)

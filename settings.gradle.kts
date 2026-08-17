@@ -35,8 +35,9 @@ plugins {
 
 rootProject.name = "line-login-kmp"
 
-// The published library.
+// The published libraries. The core has no UI dependency; the Compose button is opt-in.
 include(":lineloginkmp")
+include(":lineloginkmp-compose")
 
 // Not published. Depends on :lineloginkmp exactly the way a real app does, so everything the
 // README tells people to write is compiled on every build.

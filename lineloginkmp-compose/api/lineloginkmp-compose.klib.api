@@ -1,0 +1,72 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <line-login-kmp:lineloginkmp-compose>
+final class dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel { // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel|null[0]
+    final val long // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel.long|{}long[0]
+        final fun <get-long>(): kotlin/String // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel.long.<get-long>|<get-long>(){}[0]
+    final val short // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel.short|{}short[0]
+        final fun <get-short>(): kotlin/String // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel.short.<get-short>|<get-short>(){}[0]
+
+    final fun toString(): kotlin/String // dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel.toString|toString(){}[0]
+}
+
+final object dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors { // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors|null[0]
+    final val Base // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Base|{}Base[0]
+        final fun <get-Base>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Base.<get-Base>|<get-Base>(){}[0]
+    final val Content // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Content|{}Content[0]
+        final fun <get-Content>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Content.<get-Content>|<get-Content>(){}[0]
+    final val DisabledBackground // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledBackground|{}DisabledBackground[0]
+        final fun <get-DisabledBackground>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledBackground.<get-DisabledBackground>|<get-DisabledBackground>(){}[0]
+    final val DisabledBorder // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledBorder|{}DisabledBorder[0]
+        final fun <get-DisabledBorder>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledBorder.<get-DisabledBorder>|<get-DisabledBorder>(){}[0]
+    final val DisabledContent // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledContent|{}DisabledContent[0]
+        final fun <get-DisabledContent>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledContent.<get-DisabledContent>|<get-DisabledContent>(){}[0]
+    final val DisabledDivider // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledDivider|{}DisabledDivider[0]
+        final fun <get-DisabledDivider>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.DisabledDivider.<get-DisabledDivider>|<get-DisabledDivider>(){}[0]
+    final val Divider // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Divider|{}Divider[0]
+        final fun <get-Divider>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.Divider.<get-Divider>|<get-Divider>(){}[0]
+    final val HoverOverlay // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.HoverOverlay|{}HoverOverlay[0]
+        final fun <get-HoverOverlay>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.HoverOverlay.<get-HoverOverlay>|<get-HoverOverlay>(){}[0]
+    final val PressOverlay // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.PressOverlay|{}PressOverlay[0]
+        final fun <get-PressOverlay>(): androidx.compose.ui.graphics/Color // dev.yjyoon.lineloginkmp.compose/LineLoginButtonColors.PressOverlay.<get-PressOverlay>|<get-PressOverlay>(){}[0]
+}
+
+final object dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults { // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults|null[0]
+    final val IconSize // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.IconSize|{}IconSize[0]
+        final fun <get-IconSize>(): androidx.compose.ui.unit/Dp // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.IconSize.<get-IconSize>|<get-IconSize>(){}[0]
+    final val Shape // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.Shape|{}Shape[0]
+        final fun <get-Shape>(): androidx.compose.ui.graphics/Shape // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.Shape.<get-Shape>|<get-Shape>(){}[0]
+    final val TextStyle // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.TextStyle|{}TextStyle[0]
+        final fun <get-TextStyle>(): androidx.compose.ui.text/TextStyle // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.TextStyle.<get-TextStyle>|<get-TextStyle>(){}[0]
+
+    final fun iconPadding(androidx.compose.ui.unit/Dp = ...): androidx.compose.ui.unit/Dp // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.iconPadding|iconPadding(androidx.compose.ui.unit.Dp){}[0]
+    final fun isolationZone(androidx.compose.ui.unit/Dp = ...): androidx.compose.ui.unit/Dp // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.isolationZone|isolationZone(androidx.compose.ui.unit.Dp){}[0]
+    final fun textHorizontalPadding(androidx.compose.ui.unit/Dp = ...): androidx.compose.ui.unit/Dp // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.textHorizontalPadding|textHorizontalPadding(androidx.compose.ui.unit.Dp){}[0]
+    final fun textVerticalPadding(androidx.compose.ui.unit/Dp = ...): androidx.compose.ui.unit/Dp // dev.yjyoon.lineloginkmp.compose/LineLoginButtonDefaults.textVerticalPadding|textVerticalPadding(androidx.compose.ui.unit.Dp){}[0]
+}
+
+final object dev.yjyoon.lineloginkmp.compose/LineLoginButtonText { // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText|null[0]
+    final val Default // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.Default|{}Default[0]
+        final fun <get-Default>(): dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.Default.<get-Default>|<get-Default>(){}[0]
+    final val Labels // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.Labels|{}Labels[0]
+        final fun <get-Labels>(): kotlin.collections/Map<kotlin/String, dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel> // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.Labels.<get-Labels>|<get-Labels>(){}[0]
+
+    final fun current(androidx.compose.runtime/Composer?, kotlin/Int): dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.current|current(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+    final fun of(kotlin/String): dev.yjyoon.lineloginkmp.compose/LineLoginButtonLabel // dev.yjyoon.lineloginkmp.compose/LineLoginButtonText.of|of(kotlin.String){}[0]
+}
+
+final val dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop|#static{}dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop[0]
+final val dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop|#static{}dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop[0]
+final val dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop|#static{}dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop[0]
+final val dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop|#static{}dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop[0]
+
+final fun dev.yjyoon.lineloginkmp.compose/LineLoginButton(androidx.compose.ui.graphics.painter/Painter, kotlin/Function0<kotlin/Unit>, androidx.compose.ui/Modifier?, kotlin/Boolean, kotlin/String?, androidx.compose.ui.unit/Dp, androidx.compose.ui.graphics/Shape?, androidx.compose.ui.text/TextStyle?, androidx.compose.foundation.interaction/MutableInteractionSource?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // dev.yjyoon.lineloginkmp.compose/LineLoginButton|LineLoginButton(androidx.compose.ui.graphics.painter.Painter;kotlin.Function0<kotlin.Unit>;androidx.compose.ui.Modifier?;kotlin.Boolean;kotlin.String?;androidx.compose.ui.unit.Dp;androidx.compose.ui.graphics.Shape?;androidx.compose.ui.text.TextStyle?;androidx.compose.foundation.interaction.MutableInteractionSource?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop_getter(): kotlin/Int // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop_getter|dev_yjyoon_lineloginkmp_compose_LineLoginButtonColors$stableprop_getter(){}[0]
+final fun dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop_getter(): kotlin/Int // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop_getter|dev_yjyoon_lineloginkmp_compose_LineLoginButtonDefaults$stableprop_getter(){}[0]
+final fun dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop_getter(): kotlin/Int // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop_getter|dev_yjyoon_lineloginkmp_compose_LineLoginButtonLabel$stableprop_getter(){}[0]
+final fun dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop_getter(): kotlin/Int // dev.yjyoon.lineloginkmp.compose/dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop_getter|dev_yjyoon_lineloginkmp_compose_LineLoginButtonText$stableprop_getter(){}[0]

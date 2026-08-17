@@ -36,6 +36,14 @@ line-sdk = { module = "com.linecorp.linesdk:linesdk", version.ref = "linesdk-and
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
+# Declared explicitly, because the matching `compose.*` accessors are deprecated. material3 is the
+# exception: it is published on its own version line (1.12.0-alpha03 while Compose is 1.11.1), so
+# the accessor is what pairs the right one with the plugin.
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose" }
+
 # Consumed by gradle-conventions so the convention plugins can apply them.
 spotlessGradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 mavenPublishGradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "publish" }

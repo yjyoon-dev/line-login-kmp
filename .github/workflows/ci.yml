@@ -28,14 +28,15 @@ jobs:
       - name: Formatting
         run: ./gradlew spotlessCheck
 
+      # Unscoped, so a module added later is covered without touching this file.
       - name: Public API has not changed unintentionally
-        run: ./gradlew :lineloginkmp:checkKotlinAbi
+        run: ./gradlew checkKotlinAbi
 
       - name: Tests
-        run: ./gradlew :lineloginkmp:allTests
+        run: ./gradlew allTests
 
-      - name: Build library
-        run: ./gradlew :lineloginkmp:assemble
+      - name: Build libraries
+        run: ./gradlew assemble
 
       # Catches packaging mistakes — a missing POM field, an unpublished artifact — without needing
       # credentials. The version must end in -SNAPSHOT: signAllPublications() makes signing
@@ -47,7 +48,9 @@ jobs:
         if: failure()
         with:
           name: test-reports
-          path: lineloginkmp/build/reports/tests
+          path: |
+            lineloginkmp/build/reports/tests
+            lineloginkmp-compose/build/reports/tests
 
   # The integration gate: an app that adds LineSDKObjC through SPM must link the Kotlin framework.
   # Nothing else proves the iOS half actually works from a consumer's side.

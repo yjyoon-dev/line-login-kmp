@@ -23,7 +23,14 @@ First release.
   and a `configure(context, config)` escape hatch.
 - iOS: driven directly from Kotlin through cinterop against LINE's `LineSDKObjC` layer — no Swift
   bridge. `LineLoginUrlHandler.handle(url:)` is the single Swift touchpoint.
-- Cancelling the calling coroutine tears down the native login UI on both platforms.
+- Cancelling the calling coroutine abandons the login: iOS dismisses the LINE screen, Android
+  closes the library's own Activity.
+- `dev.yjyoon.lineloginkmp:lineloginkmp-compose`, an optional second artifact with `LineLoginButton` — a Compose
+  Multiplatform button built to LINE's
+  [design guidelines](https://developers.line.biz/en/docs/line-login/login-button/), including the
+  state overlays, the disabled treatment, icon-derived padding, and LINE's recommended captions in
+  18 languages. It ships no LINE artwork: the icon is a parameter, because downloading LINE's
+  template is how a developer accepts the usage guidelines attached to it.
 
 [Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v0.1.0
