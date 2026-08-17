@@ -81,8 +81,9 @@ import androidx.compose.ui.unit.dp
  * @param enabled When false the button turns white with a border and grey content, per the
  *   guidelines — not a dimmed green.
  * @param text The caption. Defaults to LINE's recommended phrase for the current locale. Pass
- *   `null` for an icon-only button, which the guidelines also permit; anything else must be a
- *   single line that makes clear the button logs in with LINE.
+ *   `null` for an icon-only button, which the guidelines also permit — the icon then carries LINE's
+ *   wording as its accessibility label, so a screen reader still announces what the button does.
+ *   Anything else must be a single line that makes clear the button logs in with LINE.
  * @param height The button height, and the side of the square the icon sits in.
  * @param lineIcon Defaults to the icon from LINE's official template, bundled with this library.
  *   Replace it only with another asset from that template — the guidelines forbid a modified or
@@ -107,6 +108,15 @@ public fun LineLoginButton(
         if (enabled) LineLoginButtonColors.Content else LineLoginButtonColors.DisabledContent
     val dividerColor =
         if (enabled) LineLoginButtonColors.Divider else LineLoginButtonColors.DisabledDivider
+
+    // A caption describes the button to a screen reader by itself. Without one there is nothing to
+    // announce but "button", so the icon carries LINE's own wording for the reader's language.
+    val iconDescription = if (text == null) LineLoginButtonText.current().long else null
+
+    val captionStyle =
+        remember(textStyle, contentColor) {
+            textStyle.copy(color = contentColor, textAlign = TextAlign.Center)
+        }
 
     // Layer order matters, and the guidelines spell it out: the state overlay sits on the base
     // colour, and the divider and content sit above the overlay — never tinted by it. Both colours
@@ -151,7 +161,7 @@ public fun LineLoginButton(
             // to add here — the square is measured to the button's height and the artwork fills it.
             Image(
                 painter = lineIcon,
-                contentDescription = null,
+                contentDescription = iconDescription,
                 colorFilter = ColorFilter.tint(contentColor),
             )
 
@@ -169,7 +179,7 @@ public fun LineLoginButton(
                         Modifier.padding(
                             horizontal = LineLoginButtonDefaults.textHorizontalPadding(height),
                         ),
-                    style = textStyle.copy(color = contentColor, textAlign = TextAlign.Center),
+                    style = captionStyle,
                     // The guidelines forbid line breaks in the caption.
                     maxLines = 1,
                     softWrap = false,
