@@ -47,6 +47,7 @@ LINE is not installed, and token storage.
 | Android | minSdk **24** — the floor LINE's own AAR declares |
 | iOS | **15.0** — raised by LINE iOS SDK 5.17.0. LINE's docs still say 13.0; they are stale |
 | Kotlin | **2.4.0**+ |
+| Xcode | any recent version for the core library · **26+** if you use `lineloginkmp-compose`, which inherits Compose Multiplatform 1.11's requirement |
 | LINE SDK | Android `5.13.0` (pulled in automatically) · iOS `5.17.0` (you add it via SPM) |
 
 You also need a **LINE Login channel** from the

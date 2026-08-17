@@ -10,11 +10,15 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# macos-26, not macos-15: Compose Multiplatform 1.11 links against UIKit symbols that only exist in
+# the iOS 26 SDK, and macos-15's default Xcode is 16.4. On the older image the iOS link fails with
+# "Undefined symbols: _OBJC_CLASS_$_UIViewLayoutRegion" — in the compose module's test binary and in
+# the sample app alike.
 jobs:
-  # Everything that does not need Xcode. Runs first because it is the one that usually fails.
+  # Runs first because it is the one that usually fails.
   library:
     # macOS, not Linux: the iOS targets and their cinterop against LineSDKObjC only build here.
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 
@@ -55,7 +59,7 @@ jobs:
   # The integration gate: an app that adds LineSDKObjC through SPM must link the Kotlin framework.
   # Nothing else proves the iOS half actually works from a consumer's side.
   sample:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 

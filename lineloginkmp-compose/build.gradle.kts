@@ -61,6 +61,19 @@ kotlin {
             baseName = "LineLoginKMPCompose"
             isStatic = true
         }
+
+        // A test binary is a real executable, so it has to resolve everything the core library's
+        // klib references — including LineSDKObjC, which arrives here through the auto-link record
+        // baked into that klib's cinterop. Without these it links today only because nothing in
+        // these tests reaches LINE's SDK, and it would break the moment one did.
+        iosTarget.binaries.getTest("DEBUG").linkerOpts(
+            "-F",
+            lineSdkObjCSliceFor(iosTarget.name).absolutePath,
+            "-framework",
+            "LineSDKObjC",
+            "-rpath",
+            lineSdkObjCSliceFor(iosTarget.name).absolutePath,
+        )
     }
 
     sourceSets {
@@ -83,4 +96,18 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+// The xcframework itself is downloaded by :lineloginkmp, which is where the version, the checksum
+// and the cinterop live. This only needs to know where that put it.
+private fun lineSdkObjCSliceFor(targetName: String): File {
+    val slice =
+        when (targetName) {
+            "iosArm64" -> "ios-arm64"
+            "iosSimulatorArm64", "iosX64" -> "ios-arm64_x86_64-simulator"
+            else -> error("No LineSDKObjC slice is published for $targetName.")
+        }
+    val version = libs.versions.linesdk.ios.get()
+    return gradle.gradleUserHomeDir
+        .resolve("caches/lineloginkmp/linesdk-objc/$version/LineSDKObjC.xcframework/$slice")
 }

@@ -12,7 +12,7 @@ on:
 jobs:
   publish:
     # Must be macOS: the iOS klibs carry a cinterop binding that cannot be produced anywhere else.
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 

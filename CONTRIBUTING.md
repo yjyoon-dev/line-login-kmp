@@ -5,8 +5,13 @@ me", which is a real bug.
 
 ## Getting set up
 
-You need **macOS**, **JDK 17**, **Xcode**, and the Android SDK. macOS is not a preference: the iOS
-targets bind LINE's Objective-C SDK through cinterop, and that only runs here.
+You need **macOS**, **JDK 17**, **Xcode 26 or newer**, and the Android SDK. macOS is not a
+preference: the iOS targets bind LINE's Objective-C SDK through cinterop, and that only runs here.
+
+Xcode 26 is a floor, not a suggestion. Compose Multiplatform 1.11 references UIKit symbols that only
+exist in the iOS 26 SDK (`UIViewLayoutRegion`), so anything linking `lineloginkmp-compose` for iOS
+fails on Xcode 16 with `Undefined symbols for architecture arm64`. The core library alone links
+fine on older Xcode — it has no UI dependency.
 
 ```bash
 git clone https://github.com/yjyoon-dev/line-login-kmp.git
