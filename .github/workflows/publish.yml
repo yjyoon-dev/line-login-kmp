@@ -34,10 +34,15 @@ jobs:
           echo "Publishing $version"
 
       - name: Check before publishing
-        run: ./gradlew spotlessCheck :lineloginkmp:checkKotlinAbi :lineloginkmp:allTests
+        run: ./gradlew spotlessCheck checkKotlinAbi allTests
 
+      # publishAndRelease, not publish: the deployment is released once Central has validated it,
+      # so cutting a GitHub Release is the whole ritual. Validation still gates it — a rejected
+      # deployment fails this step and nothing reaches Maven Central. Swap this for
+      # `publishToMavenCentral` if you would rather promote each release by hand at
+      # https://central.sonatype.com/publishing.
       - name: Publish to Maven Central
-        run: ./gradlew publishToMavenCentral -PVERSION_NAME=${{ steps.version.outputs.value }}
+        run: ./gradlew publishAndReleaseToMavenCentral -PVERSION_NAME=${{ steps.version.outputs.value }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -45,7 +50,8 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
-      # The deployment is staged, not released: promote it in the Central Portal once the
-      # artifacts look right.
-      - name: Next step
-        run: echo "Staged. Promote the deployment at https://central.sonatype.com/publishing"
+      - name: Done
+        run: |
+          echo "Released ${{ steps.version.outputs.value }}."
+          echo "It appears on https://central.sonatype.com within minutes and on Maven Central"
+          echo "search within a few hours."
