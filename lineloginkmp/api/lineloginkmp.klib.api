@@ -202,6 +202,7 @@ final object dev.yjyoon.lineloginkmp/LineLogin { // dev.yjyoon.lineloginkmp/Line
 
     final fun configure(dev.yjyoon.lineloginkmp/LineLoginConfig) // dev.yjyoon.lineloginkmp/LineLogin.configure|configure(dev.yjyoon.lineloginkmp.LineLoginConfig){}[0]
     final suspend fun currentAccessToken(): dev.yjyoon.lineloginkmp/LineAccessToken? // dev.yjyoon.lineloginkmp/LineLogin.currentAccessToken|currentAccessToken(){}[0]
+    final suspend fun isLineAppInstalled(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogin.isLineAppInstalled|isLineAppInstalled(){}[0]
     final suspend fun isLoggedIn(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogin.isLoggedIn|isLoggedIn(){}[0]
     final suspend fun login(dev.yjyoon.lineloginkmp/LineLoginRequest = ...): dev.yjyoon.lineloginkmp/LineLoginResult // dev.yjyoon.lineloginkmp/LineLogin.login|login(dev.yjyoon.lineloginkmp.LineLoginRequest){}[0]
     final suspend fun logout(): dev.yjyoon.lineloginkmp/LineLogoutResult // dev.yjyoon.lineloginkmp/LineLogin.logout|logout(){}[0]

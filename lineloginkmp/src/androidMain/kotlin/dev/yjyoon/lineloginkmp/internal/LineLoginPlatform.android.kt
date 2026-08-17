@@ -16,6 +16,8 @@
 package dev.yjyoon.lineloginkmp.internal
 
 import android.content.Context
+import android.content.pm.PackageManager
+import com.linecorp.linesdk.Constants
 import com.linecorp.linesdk.api.LineApiClient
 import com.linecorp.linesdk.api.LineApiClientBuilder
 import dev.yjyoon.lineloginkmp.LineAccessToken
@@ -154,3 +156,22 @@ internal actual suspend fun platformCurrentAccessToken(config: LineLoginConfig):
 }
 
 internal actual suspend fun platformIsLoggedIn(config: LineLoginConfig): Boolean = platformCurrentAccessToken(config) != null
+
+internal actual suspend fun platformIsLineAppInstalled(): Boolean {
+    // No Context means no way to ask the package manager. False rather than a thrown exception:
+    // this is a "which button should I draw" check, and login works either way.
+    val context = LineLoginContext.peek() ?: return false
+    return isLineAppInstalledIn(context)
+}
+
+/**
+ * Needs no `<queries>` entry from the consumer: the LINE SDK's own manifest already declares
+ * `jp.naver.line.android` for Android 11+ package visibility, and manifest merging brings it in.
+ */
+internal fun isLineAppInstalledIn(context: Context): Boolean =
+    try {
+        context.packageManager.getPackageInfo(Constants.LINE_APP_PACKAGE_NAME, 0)
+        true
+    } catch (notInstalled: PackageManager.NameNotFoundException) {
+        false
+    }

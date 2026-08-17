@@ -17,6 +17,7 @@ package dev.yjyoon.lineloginkmp
 
 import dev.yjyoon.lineloginkmp.internal.platformConfigure
 import dev.yjyoon.lineloginkmp.internal.platformCurrentAccessToken
+import dev.yjyoon.lineloginkmp.internal.platformIsLineAppInstalled
 import dev.yjyoon.lineloginkmp.internal.platformIsLoggedIn
 import dev.yjyoon.lineloginkmp.internal.platformLogin
 import dev.yjyoon.lineloginkmp.internal.platformLogout
@@ -171,6 +172,27 @@ public object LineLogin {
         val config = configuration ?: return false
         return platformIsLoggedIn(config)
     }
+
+    /**
+     * Whether the LINE app is installed on this device.
+     *
+     * For deciding what to *show*, not whether to offer a login: [login] works either way, going
+     * app-to-app when LINE is present and falling back to a browser when it is not. Use it to label
+     * a button, to explain the flow the user is about to see, or to record which path a failing
+     * login took.
+     *
+     * Needs no configuration, so it may be called before [configure].
+     *
+     * On **iOS** this requires `lineauth2` in your `Info.plist` under
+     * `LSApplicationQueriesSchemes` — the same entry app-to-app login needs. Without it iOS answers
+     * false on every device, so a false here on a phone that visibly has LINE means that key is
+     * missing rather than that LINE is.
+     *
+     * On **Android** it uses the application `Context` this library picks up through
+     * `androidx.startup`. If your app strips that provider, use the Android-only
+     * `isLineAppInstalled(context)` overload instead, which takes one directly.
+     */
+    public suspend fun isLineAppInstalled(): Boolean = platformIsLineAppInstalled()
 
     /** Resets configuration. Visible for tests in this library only. */
     internal fun resetForTest() {
