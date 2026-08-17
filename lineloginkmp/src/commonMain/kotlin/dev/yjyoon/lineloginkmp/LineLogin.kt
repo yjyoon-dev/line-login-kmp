@@ -20,6 +20,7 @@ import dev.yjyoon.lineloginkmp.internal.platformCurrentAccessToken
 import dev.yjyoon.lineloginkmp.internal.platformIsLoggedIn
 import dev.yjyoon.lineloginkmp.internal.platformLogin
 import dev.yjyoon.lineloginkmp.internal.platformLogout
+import dev.yjyoon.lineloginkmp.internal.withLineLoginLock
 import kotlinx.coroutines.sync.Mutex
 import kotlin.concurrent.Volatile
 
@@ -78,15 +79,19 @@ public object LineLogin {
      *   here beats behaving differently on each platform.
      */
     public fun configure(config: LineLoginConfig) {
-        val current = configuration
-        if (current == config) return
-        check(current == null || current.channelId == config.channelId) {
-            "LineLogin is already configured with channel ${current?.channelId} and cannot be " +
-                "reconfigured with ${config.channelId}. The iOS LINE SDK only supports one " +
-                "channel per process."
+        // Locked, not merely volatile: validating, setting the platform SDK up and recording the
+        // result have to be one step. See withLineLoginLock for what interleaving them costs.
+        withLineLoginLock {
+            val current = configuration
+            if (current == config) return@withLineLoginLock
+            check(current == null || current.channelId == config.channelId) {
+                "LineLogin is already configured with channel ${current?.channelId} and cannot be " +
+                    "reconfigured with ${config.channelId}. The iOS LINE SDK only supports one " +
+                    "channel per process."
+            }
+            platformConfigure(config)
+            configuration = config
         }
-        platformConfigure(config)
-        configuration = config
     }
 
     /**
