@@ -140,23 +140,5 @@ A real login needs a real channel and a real account, so these stay a manual che
 
 ## Releasing
 
-1. Update `CHANGELOG.md`.
-2. Publish a GitHub Release tagged `vX.Y.Z`. That is the whole release: the `Publish` workflow
-   re-runs the checks, signs, uploads, and releases to Maven Central once Central has validated the
-   deployment. A rejected deployment fails the workflow and nothing is published.
-
-The version comes from the tag, so `VERSION_NAME` in `gradle.properties` is only a default for local
-builds.
-
-Publishing runs on macOS — the iOS klibs cannot be produced anywhere else — and needs five
-repository secrets:
-
-| Secret | What it is |
-|---|---|
-| `MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_PASSWORD` | A Central Portal **user token**, from the account that owns the `dev.yjyoon` namespace. Not the account's login. |
-| `SIGNING_KEY` | `gpg --export-secret-keys --armor <key id>` |
-| `SIGNING_KEY_ID` | The last 8 characters of that key's id |
-| `SIGNING_KEY_PASSWORD` | That key's passphrase |
-
-The signing key's **public** half must be on a keyserver — `gpg --keyserver keyserver.ubuntu.com
---send-keys <fingerprint>` — or Central rejects the signatures.
+Not something a contribution needs to worry about — releases are cut by the maintainer, and the
+procedure lives in [RELEASING.md](RELEASING.md).

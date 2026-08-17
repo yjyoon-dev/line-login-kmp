@@ -42,7 +42,7 @@ LINE is not installed, and token storage.
 
 ## 📋 Requirements
 
-| | |
+| Component | Requirement |
 |---|---|
 | Android | minSdk **24** — the floor LINE's own AAR declares |
 | iOS | **15.0** — raised by LINE iOS SDK 5.17.0. LINE's docs still say 13.0; they are stale |
@@ -423,7 +423,7 @@ open sample/iosApp/iosApp.xcodeproj                # iOS
 ## 🤝 Contributing
 
 Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for how the project is
-laid out, what CI checks, and how a release is cut.
+laid out, which parts look wrong but are not, and what CI checks.
 
 ## 📄 License
 
