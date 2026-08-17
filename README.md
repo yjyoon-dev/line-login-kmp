@@ -1,4 +1,4 @@
-# line-login-kmp
+![line-login-kmp — LINE Login for Kotlin Multiplatform](art/banner.png)
 
 [![Maven Central](https://img.shields.io/maven-central/v/dev.yjyoon.lineloginkmp/lineloginkmp?color=A97BFF&label=Maven%20Central)](https://central.sonatype.com/artifact/dev.yjyoon.lineloginkmp/lineloginkmp)
 [![License](https://img.shields.io/badge/License-Apache%202.0-5675DF.svg)](https://www.apache.org/licenses/LICENSE-2.0)
