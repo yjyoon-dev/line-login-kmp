@@ -41,3 +41,9 @@ internal expect suspend fun platformLogout(config: LineLoginConfig): LineLogoutR
 internal expect suspend fun platformCurrentAccessToken(config: LineLoginConfig): LineAccessToken?
 
 internal expect suspend fun platformIsLoggedIn(config: LineLoginConfig): Boolean
+
+/**
+ * Takes no [LineLoginConfig]: whether LINE is on the device has nothing to do with which channel
+ * the app uses, so this answers before `configure` has ever run.
+ */
+internal expect suspend fun platformIsLineAppInstalled(): Boolean

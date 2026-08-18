@@ -16,6 +16,7 @@
 package dev.yjyoon.lineloginkmp.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.intl.Locale
 
 /**
@@ -85,9 +86,19 @@ public object LineLoginButtonText {
         }
     }
 
-    /** The caption for the locale the app is currently running in. */
+    /**
+     * The caption for the locale the app is currently running in.
+     *
+     * This is [LineLoginButton]'s default caption, so it is evaluated on every recomposition of
+     * every button. [of] parses the tag and allocates while doing it, so the result is remembered
+     * against the tag rather than recomputed — the locale is still read each time, so a locale
+     * change still moves the caption.
+     */
     @Composable
-    public fun current(): LineLoginButtonLabel = of(Locale.current.toLanguageTag())
+    public fun current(): LineLoginButtonLabel {
+        val languageTag = Locale.current.toLanguageTag()
+        return remember(languageTag) { of(languageTag) }
+    }
 
     /** Regions and scripts written in Traditional Chinese. */
     private val TRADITIONAL_CHINESE = setOf("TW", "HK", "MO", "HANT")

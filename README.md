@@ -64,11 +64,11 @@ signing-certificate SHA-1, and your iOS bundle identifier, registered on it — 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")
 
             // Optional: a Compose Multiplatform login button that follows LINE's design
             // guidelines. Skip it if you would rather build the login button yourself.
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.0.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.0.1")
         }
     }
 }
@@ -85,12 +85,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true                             // required — frameworks are dynamic by default
-            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")     // ← add this
+            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")     // ← add this
         }
     }
     sourceSets {
         commonMain.dependencies {
-            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.0")        // `api`, so there is something to export
+            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")        // `api`, so there is something to export
         }
     }
 }
@@ -128,7 +128,8 @@ kotlin {
 ```
 
 The first is where LINE returns after a web login. The second lets the SDK detect the LINE app —
-omit it and every user silently gets the slower browser flow, with nothing anywhere explaining why.
+omit it and every user silently gets the slower browser flow, with nothing anywhere explaining why,
+and `isLineAppInstalled()` answers false on every device.
 
 Android needs no manifest changes at all.
 
@@ -180,19 +181,24 @@ if (LineLogin.isLoggedIn()) { /* a token exists on this device */ }
 val token = LineLogin.currentAccessToken()
 ```
 
+Whether this device has the LINE app, which decides the route a login takes — app-to-app, or the
+browser. For deciding what to *show*; login works either way:
+
+```kotlin
+if (LineLogin.isLineAppInstalled()) { /* … */ }
+```
+
 ### Android
 
 Nothing to do. The application `Context` is picked up by an `androidx.startup` initialiser, so
 `configure` works from shared code.
 
-Two Android-only extras are available if you want them:
+Two Android-only overloads exist for apps that strip
+`androidx.startup.InitializationProvider` from their manifest, and take the `Context` directly:
 
 ```kotlin
-// Only if your app strips androidx.startup.InitializationProvider from its manifest.
 LineLogin.configure(context, LineLoginConfig(channelId = "1234567890"))
-
-// For deciding what to put on a button. Login works either way.
-if (LineLogin.isLineAppInstalled(context)) { /* … */ }
+if (LineLogin.isLineAppInstalled(context)) { /* … */ }   // this one does not suspend
 ```
 
 `login()` must be called while your app is in the foreground — Android does not allow starting an
