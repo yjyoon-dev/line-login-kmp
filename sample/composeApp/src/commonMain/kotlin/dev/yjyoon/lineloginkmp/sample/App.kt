@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.yjyoon.lineloginkmp.LineLogin
@@ -79,6 +81,28 @@ fun App() {
                     text = "line-login-kmp",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
+                )
+
+                // Which route a login takes depends on this, so it is worth seeing while testing:
+                // app-to-app when LINE is installed, the browser when it is not. Needs no
+                // configure() call, and needs no platform code here — it is the same shared API on
+                // both platforms. A real screen that cares would re-check on resume, since the user
+                // can install or remove LINE while the app sits in the background.
+                val lineAppInstalled by
+                    produceState<Boolean?>(initialValue = null) {
+                        value = LineLogin.isLineAppInstalled()
+                    }
+
+                Text(
+                    text =
+                        when (lineAppInstalled) {
+                            true -> "LINE app installed · login goes app-to-app"
+                            false -> "LINE app not installed · login falls back to the browser"
+                            null -> "Looking for the LINE app…"
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
                 )
 
                 // The login button comes from :lineloginkmp-compose: LINE's own icon and caption,

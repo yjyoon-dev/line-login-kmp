@@ -17,9 +17,11 @@ package dev.yjyoon.lineloginkmp
 
 import dev.yjyoon.lineloginkmp.internal.platformConfigure
 import dev.yjyoon.lineloginkmp.internal.platformCurrentAccessToken
+import dev.yjyoon.lineloginkmp.internal.platformIsLineAppInstalled
 import dev.yjyoon.lineloginkmp.internal.platformIsLoggedIn
 import dev.yjyoon.lineloginkmp.internal.platformLogin
 import dev.yjyoon.lineloginkmp.internal.platformLogout
+import dev.yjyoon.lineloginkmp.internal.withLineLoginLock
 import kotlinx.coroutines.sync.Mutex
 import kotlin.concurrent.Volatile
 
@@ -78,15 +80,19 @@ public object LineLogin {
      *   here beats behaving differently on each platform.
      */
     public fun configure(config: LineLoginConfig) {
-        val current = configuration
-        if (current == config) return
-        check(current == null || current.channelId == config.channelId) {
-            "LineLogin is already configured with channel ${current?.channelId} and cannot be " +
-                "reconfigured with ${config.channelId}. The iOS LINE SDK only supports one " +
-                "channel per process."
+        // Locked, not merely volatile: validating, setting the platform SDK up and recording the
+        // result have to be one step. See withLineLoginLock for what interleaving them costs.
+        withLineLoginLock {
+            val current = configuration
+            if (current == config) return@withLineLoginLock
+            check(current == null || current.channelId == config.channelId) {
+                "LineLogin is already configured with channel ${current?.channelId} and cannot be " +
+                    "reconfigured with ${config.channelId}. The iOS LINE SDK only supports one " +
+                    "channel per process."
+            }
+            platformConfigure(config)
+            configuration = config
         }
-        platformConfigure(config)
-        configuration = config
     }
 
     /**
@@ -166,6 +172,27 @@ public object LineLogin {
         val config = configuration ?: return false
         return platformIsLoggedIn(config)
     }
+
+    /**
+     * Whether the LINE app is installed on this device.
+     *
+     * For deciding what to *show*, not whether to offer a login: [login] works either way, going
+     * app-to-app when LINE is present and falling back to a browser when it is not. Use it to label
+     * a button, to explain the flow the user is about to see, or to record which path a failing
+     * login took.
+     *
+     * Needs no configuration, so it may be called before [configure].
+     *
+     * On **iOS** this requires `lineauth2` in your `Info.plist` under
+     * `LSApplicationQueriesSchemes` — the same entry app-to-app login needs. Without it iOS answers
+     * false on every device, so a false here on a phone that visibly has LINE means that key is
+     * missing rather than that LINE is.
+     *
+     * On **Android** it uses the application `Context` this library picks up through
+     * `androidx.startup`. If your app strips that provider, use the Android-only
+     * `isLineAppInstalled(context)` overload instead, which takes one directly.
+     */
+    public suspend fun isLineAppInstalled(): Boolean = platformIsLineAppInstalled()
 
     /** Resets configuration. Visible for tests in this library only. */
     internal fun resetForTest() {

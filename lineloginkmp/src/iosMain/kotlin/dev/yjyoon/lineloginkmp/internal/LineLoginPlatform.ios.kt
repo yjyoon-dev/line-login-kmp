@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import platform.Foundation.NSURL
+import platform.UIKit.UIApplication
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 import kotlin.coroutines.resume
@@ -159,6 +160,29 @@ internal actual suspend fun platformCurrentAccessToken(config: LineLoginConfig):
 
 internal actual suspend fun platformIsLoggedIn(config: LineLoginConfig): Boolean =
     loginManager.isSetupFinished() && loginManager.isAuthorized()
+
+/**
+ * `LineSDKObjC` publishes no installed check, so this asks the same question its Swift half asks
+ * internally: can anything on this device open LINE's auth scheme?
+ *
+ * Requires `lineauth2` in the app's `LSApplicationQueriesSchemes` — the same `Info.plist` entry
+ * app-to-app login needs. Without it iOS answers false for every app, so a `false` here on a device
+ * that does have LINE is that key missing, not LINE missing.
+ *
+ * **Do not add an `iosTest` for this.** Kotlin/Native runs tests on the main thread, so a test has to
+ * block that thread to await a suspending function — and a blocked main thread is exactly what keeps
+ * the main queue from ever running the block below. Such a test hangs forever instead of failing,
+ * which costs more than the coverage is worth. [platformLogin] hops to the main queue for the same
+ * reason and is unreachable from a test for the same reason.
+ */
+internal actual suspend fun platformIsLineAppInstalled(): Boolean =
+    // canOpenURL is UIApplication, and UIApplication is main-thread only.
+    withContext(Dispatchers.Main) {
+        UIApplication.sharedApplication.canOpenURL(NSURL(string = LINE_AUTH_URL_SCHEME))
+    }
+
+/** LINE's own app-to-app authentication scheme, as registered by the LINE app. */
+private const val LINE_AUTH_URL_SCHEME = "lineauth2://"
 
 private fun LineLoginRequest.toSdkParameters(): LineSDKLoginManagerParameters =
     LineSDKLoginManagerParameters().apply {

@@ -6,6 +6,34 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-17
+
+### Added
+
+- `LineLogin.isLineAppInstalled()` in shared code. Android already had an Android-only overload
+  taking a `Context`; iOS had nothing, so the answer was unavailable from common code. The iOS half
+  asks the same question LINE's own SDK asks internally — whether anything can open the `lineauth2`
+  scheme — which means it needs `LSApplicationQueriesSchemes` in your `Info.plist`, the entry
+  app-to-app login already requires.
+
+### Fixed
+
+- `LineLoginButton` kept its icon in a square at the leading edge when the button is wider than its
+  content. It centred the whole row instead, so a stretched button — `Modifier.fillMaxWidth()`, the
+  common case on a sign-in screen — opened a gap of bare background to the left of the icon.
+- An icon-only `LineLoginButton` (`text = null`) now carries LINE's own wording for the reader's
+  language as its accessibility label. It previously had none at all, so a screen reader announced
+  only "button".
+- `LineLogin.configure` is atomic. Validating, setting the platform SDK up and recording the result
+  were three separate steps, so two threads could interleave them — running the iOS SDK's one-shot
+  setup twice, or letting two different channel IDs both pass the "already configured" check.
+
+### Changed
+
+- `LineLoginButtonText.current()` remembers its parse against the language tag instead of
+  re-resolving the locale's caption on every recomposition. It is the login button's default
+  caption, so it ran on every frame that recomposed one.
+
 ## [1.0.0] - 2026-08-17
 
 First release.

@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    # develop is where work lands and main is what gets released, so both are worth guarding.
+    branches: [ main, develop ]
   pull_request:
   workflow_dispatch:
 

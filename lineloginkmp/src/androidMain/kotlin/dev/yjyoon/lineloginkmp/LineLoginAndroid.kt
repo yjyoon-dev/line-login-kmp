@@ -16,9 +16,8 @@
 package dev.yjyoon.lineloginkmp
 
 import android.content.Context
-import android.content.pm.PackageManager
-import com.linecorp.linesdk.Constants
 import dev.yjyoon.lineloginkmp.internal.LineLoginContext
+import dev.yjyoon.lineloginkmp.internal.isLineAppInstalledIn
 
 /**
  * Configures LINE Login with an explicit [Context].
@@ -37,18 +36,13 @@ public fun LineLogin.configure(
 }
 
 /**
- * Whether the LINE app is installed on this device.
+ * Whether the LINE app is installed on this device, asked with an explicit [Context].
  *
- * Useful for deciding what to put on a button — logging in works either way, falling back to a
- * browser when LINE is missing.
+ * The shared [LineLogin.isLineAppInstalled] answers the same question on both platforms without a
+ * `Context`. This overload is for apps that strip `androidx.startup.InitializationProvider`, and for
+ * callers that already hold a `Context` and would rather not suspend.
  *
  * Needs no `<queries>` entry: the LINE SDK's own manifest already declares `jp.naver.line.android`
  * for Android 11+ package visibility.
  */
-public fun LineLogin.isLineAppInstalled(context: Context): Boolean =
-    try {
-        context.packageManager.getPackageInfo(Constants.LINE_APP_PACKAGE_NAME, 0)
-        true
-    } catch (notInstalled: PackageManager.NameNotFoundException) {
-        false
-    }
+public fun LineLogin.isLineAppInstalled(context: Context): Boolean = isLineAppInstalledIn(context)
