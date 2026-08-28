@@ -185,6 +185,24 @@ kotlin {
         }
     }
 
+    // The web target. There is no LINE SDK to bind here — the browser half runs on LIFF, LINE's
+    // official JavaScript SDK, loaded from LINE's CDN at configure time and reached through
+    // wasmJs's JS interop. See LineLoginPlatform.wasmJs.kt for why LIFF rather than the plain
+    // OAuth web flow: LINE's token endpoint demands the channel *secret*, which must never ship
+    // in a browser, and LIFF is LINE's own answer to exactly that problem.
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        // browser(), not nodejs(): a LINE login needs a window to redirect, DOM to inject the SDK
+        // script into, and localStorage for LIFF's own token store. None of that exists in Node.
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+    }
+
     listOf(
         iosX64(),
         iosArm64(),

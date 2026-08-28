@@ -102,6 +102,15 @@ public object LineLogin {
      * [LineLoginResult.Cancelled]. The only exception that escapes is `CancellationException`,
      * when the calling coroutine itself is cancelled.
      *
+     * ### Web (wasmJs)
+     *
+     * In a browser this is a **full-page redirect**, not a dialog: when nobody is signed in, the
+     * call navigates to LINE and never resumes — the page unloads underneath it. LINE then
+     * redirects back, the app starts fresh, [configure] completes the login as it initialises,
+     * and the next `login()` call returns [LineLoginResult.Success] without showing anything.
+     * A stored session short-circuits all of that and returns immediately. [request] is ignored
+     * on this platform: in LIFF the scopes belong to the LIFF app's console registration.
+     *
      * What cancellation does to the login already on screen differs by platform, and the
      * difference is not one this library can paper over:
      *  - **iOS** stops the login process outright, which dismisses the LINE screen or the web
@@ -144,6 +153,10 @@ public object LineLogin {
      * A [LineLogoutResult.Failure] means LINE was not reached, so the token was not revoked
      * server-side. It expires on its own, and the SDK has already dropped its local copy either
      * way, so the user is signed out of your app regardless.
+     *
+     * On **web** the revocation half does not exist: LIFF clears this browser's tokens and offers
+     * no client-side revoke, so the grant itself survives until it expires or the user removes it
+     * from their LINE account settings.
      */
     public suspend fun logout(): LineLogoutResult {
         val config = configuration ?: return NOT_CONFIGURED_LOGOUT
@@ -156,6 +169,9 @@ public object LineLogin {
      * Read from local storage — this does not contact LINE, and does not prove the token is still
      * valid. It can be expired or revoked; treat a failing LINE API call, not this, as the source
      * of truth.
+     *
+     * **Web is the exception:** LIFF stores no expiry, so this call asks LINE for it — one network
+     * round trip — and reports a token whose expiry cannot be confirmed as absent.
      */
     public suspend fun currentAccessToken(): LineAccessToken? {
         val config = configuration ?: return null
@@ -191,6 +207,10 @@ public object LineLogin {
      * On **Android** it uses the application `Context` this library picks up through
      * `androidx.startup`. If your app strips that provider, use the Android-only
      * `isLineAppInstalled(context)` overload instead, which takes one directly.
+     *
+     * On **web** a page cannot see the device's app list, so this answers true only when the page
+     * is running inside the LINE app's own browser, and false everywhere else — including before
+     * [configure] has loaded the SDK.
      */
     public suspend fun isLineAppInstalled(): Boolean = platformIsLineAppInstalled()
 
