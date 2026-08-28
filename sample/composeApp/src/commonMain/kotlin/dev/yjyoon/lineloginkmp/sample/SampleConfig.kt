@@ -31,3 +31,10 @@ package dev.yjyoon.lineloginkmp.sample
  * and no client app ever needs it.
  */
 internal const val SAMPLE_LINE_CHANNEL_ID = "0000000000"
+
+/**
+ * Web only. The ID of a LIFF app added to the channel above, from the console's LIFF tab — the
+ * browser login runs on LIFF, and a channel ID alone does not name a LIFF app. Leave it blank and
+ * the web sample reports NotConfigured instead of logging in.
+ */
+internal const val SAMPLE_LIFF_ID = ""

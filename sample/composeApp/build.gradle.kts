@@ -29,6 +29,16 @@ kotlin {
         compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
     }
 
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "sample.js"
+            }
+        }
+        binaries.executable()
+    }
+
     // No iosX64: Compose Multiplatform stopped publishing the Intel simulator target. The library
     // itself still supports it — only this sample cannot.
     listOf(
