@@ -74,6 +74,12 @@ jobs:
       - name: Android sample
         run: ./gradlew :sample:composeApp:assembleDebug
 
+      # The web sample. A distribution build proves the wasm target links end to end — Kotlin,
+      # Compose for Web, and the sample's own entry point — without needing a browser on this job;
+      # the library job's tests already run in Chrome headless.
+      - name: Web sample
+        run: ./gradlew :sample:composeApp:wasmJsBrowserDistribution
+
       - name: iOS sample
         working-directory: sample/iosApp
         run: |
