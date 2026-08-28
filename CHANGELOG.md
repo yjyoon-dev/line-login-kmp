@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-28
+
 ### Added
 
 - **Web support** (`wasmJs`, browser): both artifacts now publish a Kotlin/Wasm target. The browser
@@ -71,5 +73,7 @@ First release.
   18 languages. LINE's own icon is bundled — unmodified, from LINE's official template — so the
   button needs no asset from the consumer; see NOTICE for the trademark terms that come with it.
 
-[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.1.0
+[1.0.1]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.0

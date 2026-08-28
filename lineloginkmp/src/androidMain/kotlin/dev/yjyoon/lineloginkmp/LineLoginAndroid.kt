@@ -38,7 +38,7 @@ public fun LineLogin.configure(
 /**
  * Whether the LINE app is installed on this device, asked with an explicit [Context].
  *
- * The shared [LineLogin.isLineAppInstalled] answers the same question on both platforms without a
+ * The shared [LineLogin.isLineAppInstalled] answers the same question on every target without a
  * `Context`. This overload is for apps that strip `androidx.startup.InitializationProvider`, and for
  * callers that already hold a `Context` and would rather not suspend.
  *

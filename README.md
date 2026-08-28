@@ -7,7 +7,8 @@
 [![Platform](https://img.shields.io/badge/Platform-iOS-black.svg)](https://developer.apple.com/ios/)
 [![Platform](https://img.shields.io/badge/Platform-Web-blue.svg)](https://kotlinlang.org/docs/wasm-overview.html)
 
-**LINE Login for Kotlin Multiplatform.** One shared API, LINE's own native SDKs underneath.
+**LINE Login for Kotlin Multiplatform.** One shared API on **Android, iOS and the web**, with
+LINE's own SDKs underneath — the native ones on mobile, LIFF in the browser.
 
 ```kotlin
 LineLogin.configure(LineLoginConfig(channelId = "1234567890"))
@@ -19,8 +20,9 @@ when (val result = LineLogin.login()) {
 }
 ```
 
-That is the whole API on both platforms — including the app-to-app flow, the browser fallback when
-LINE is not installed, and token storage.
+That is the whole API on all three targets — including the app-to-app flow, the browser fallback
+when LINE is not installed, and token storage. Where a platform genuinely differs, the difference is
+documented rather than hidden: see [Web](#web), which redirects instead of opening a dialog.
 
 ## ✨ Why
 
@@ -31,7 +33,7 @@ LINE is not installed, and token storage.
   the `Context` bootstrap are all merged in for you.
 - **Cancelling is not an error.** [`Cancelled`](#result-model) is its own result, so backing out of
   a login never reaches your error handling.
-- **Failures you can act on.** A stable error taxonomy across both platforms, with each SDK's own
+- **Failures you can act on.** A stable error taxonomy across every target, with each SDK's own
   code and message passed through untouched for anything not yet categorised.
 - **Real cancellation.** Cancel the calling coroutine and the login is abandoned properly — on iOS the
   LINE screen is dismissed with it; on Android the library's own Activity closes, though LINE's
@@ -39,7 +41,11 @@ LINE is not installed, and token storage.
 - **No wrapper of your session.** Both SDKs already persist and refresh their own tokens. This
   library adds no second copy of that state.
 - **A compliant login button, optional.** [`lineloginkmp-compose`](#-login-button) implements LINE's
-  button design guidelines so you do not have to re-derive them from a PSD.
+  button design guidelines so you do not have to re-derive them from a PSD. It publishes for the
+  web too, so a Compose Multiplatform app keeps one button across all three targets.
+- **The web without a secret in the browser.** LINE's plain OAuth token exchange requires the
+  channel secret, which cannot ship in a page. The [web target](#web) runs on LIFF, LINE's own
+  JavaScript SDK, which completes a login without it.
 
 ## 📋 Requirements
 
@@ -55,7 +61,7 @@ LINE is not installed, and token storage.
 You also need a **LINE Login channel** from the
 [LINE Developers Console](https://developers.line.biz/console/), with your Android package name and
 signing-certificate SHA-1, and your iOS bundle identifier, registered on it — and the channel
-**published**.
+**published**. For the web, add a **LIFF app** to that same channel; [Web](#web) walks through it.
 
 ## 🚀 Installation
 
@@ -66,11 +72,11 @@ signing-certificate SHA-1, and your iOS bundle identifier, registered on it — 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")
 
             // Optional: a Compose Multiplatform login button that follows LINE's design
             // guidelines. Skip it if you would rather build the login button yourself.
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.0.1")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.1.0")
         }
     }
 }
@@ -87,12 +93,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true                             // required — frameworks are dynamic by default
-            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")     // ← add this
+            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")     // ← add this
         }
     }
     sourceSets {
         commonMain.dependencies {
-            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")        // `api`, so there is something to export
+            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")        // `api`, so there is something to export
         }
     }
 }
@@ -476,7 +482,7 @@ one-shot and asserts on a second call. An API that let you build several clients
 
 ## 📱 Sample
 
-[`sample/`](sample) is a Compose Multiplatform app running on both platforms. Put your channel ID in
+[`sample/`](sample) is a Compose Multiplatform app running on Android, iOS and the web. Put your channel ID in
 [`SampleConfig.kt`](sample/composeApp/src/commonMain/kotlin/dev/yjyoon/lineloginkmp/sample/SampleConfig.kt),
 then:
 

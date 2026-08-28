@@ -140,7 +140,8 @@ CI runs all of the above on every pull request.
 
 A real login needs a real channel and a real account, so these stay a manual checklist for releases:
 
-- Login with the LINE app installed, and without it, on both platforms.
+- Login with the LINE app installed, and without it, on Android and iOS.
+- On the web: a login through the redirect, and that a reload afterwards still reports the session.
 - Cancelling from the LINE app, and from the browser sheet.
 - On iOS with LINE **not** installed: the browser finishes and control returns to the app. This is
   what `.onOpenURL` exists for, and the failure mode is silent.
