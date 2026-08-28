@@ -5,8 +5,10 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-A97BFF.svg?logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](https://developer.android.com)
 [![Platform](https://img.shields.io/badge/Platform-iOS-black.svg)](https://developer.apple.com/ios/)
+[![Platform](https://img.shields.io/badge/Platform-Web-blue.svg)](https://kotlinlang.org/docs/wasm-overview.html)
 
-**LINE Login for Kotlin Multiplatform.** One shared API, LINE's own native SDKs underneath.
+**LINE Login for Kotlin Multiplatform.** One shared API on **Android, iOS and the web**, with
+LINE's own SDKs underneath — the native ones on mobile, LIFF in the browser.
 
 ```kotlin
 LineLogin.configure(LineLoginConfig(channelId = "1234567890"))
@@ -18,8 +20,9 @@ when (val result = LineLogin.login()) {
 }
 ```
 
-That is the whole API on both platforms — including the app-to-app flow, the browser fallback when
-LINE is not installed, and token storage.
+That is the whole API on all three targets — including the app-to-app flow, the browser fallback
+when LINE is not installed, and token storage. Where a platform genuinely differs, the difference is
+documented rather than hidden: see [Web](#web), which redirects instead of opening a dialog.
 
 ## ✨ Why
 
@@ -30,7 +33,7 @@ LINE is not installed, and token storage.
   the `Context` bootstrap are all merged in for you.
 - **Cancelling is not an error.** [`Cancelled`](#result-model) is its own result, so backing out of
   a login never reaches your error handling.
-- **Failures you can act on.** A stable error taxonomy across both platforms, with each SDK's own
+- **Failures you can act on.** A stable error taxonomy across every target, with each SDK's own
   code and message passed through untouched for anything not yet categorised.
 - **Real cancellation.** Cancel the calling coroutine and the login is abandoned properly — on iOS the
   LINE screen is dismissed with it; on Android the library's own Activity closes, though LINE's
@@ -38,7 +41,11 @@ LINE is not installed, and token storage.
 - **No wrapper of your session.** Both SDKs already persist and refresh their own tokens. This
   library adds no second copy of that state.
 - **A compliant login button, optional.** [`lineloginkmp-compose`](#-login-button) implements LINE's
-  button design guidelines so you do not have to re-derive them from a PSD.
+  button design guidelines so you do not have to re-derive them from a PSD. It publishes for the
+  web too, so a Compose Multiplatform app keeps one button across all three targets.
+- **The web without a secret in the browser.** LINE's plain OAuth token exchange requires the
+  channel secret, which cannot ship in a page. The [web target](#web) runs on LIFF, LINE's own
+  JavaScript SDK, which completes a login without it.
 
 ## 📋 Requirements
 
@@ -46,6 +53,7 @@ LINE is not installed, and token storage.
 |---|---|
 | Android | minSdk **24** — the floor LINE's own AAR declares |
 | iOS | **15.0** — raised by LINE iOS SDK 5.17.0. LINE's docs still say 13.0; they are stale |
+| Web | **Kotlin/Wasm** (`wasmJs`, browser) — runs on [LIFF](https://developers.line.biz/en/docs/liff/overview/), so the channel needs a LIFF app; see [Web](#web) |
 | Kotlin | **2.4.0**+ |
 | Xcode | any recent version for the core library · **26+** if you use `lineloginkmp-compose`, which inherits Compose Multiplatform 1.11's requirement |
 | LINE SDK | Android `5.13.0` (pulled in automatically) · iOS `5.17.0` (you add it via SPM) |
@@ -53,7 +61,7 @@ LINE is not installed, and token storage.
 You also need a **LINE Login channel** from the
 [LINE Developers Console](https://developers.line.biz/console/), with your Android package name and
 signing-certificate SHA-1, and your iOS bundle identifier, registered on it — and the channel
-**published**.
+**published**. For the web, add a **LIFF app** to that same channel; [Web](#web) walks through it.
 
 ## 🚀 Installation
 
@@ -64,11 +72,11 @@ signing-certificate SHA-1, and your iOS bundle identifier, registered on it — 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")
 
             // Optional: a Compose Multiplatform login button that follows LINE's design
             // guidelines. Skip it if you would rather build the login button yourself.
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.0.1")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.1.0")
         }
     }
 }
@@ -85,12 +93,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true                             // required — frameworks are dynamic by default
-            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")     // ← add this
+            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")     // ← add this
         }
     }
     sourceSets {
         commonMain.dependencies {
-            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.0.1")        // `api`, so there is something to export
+            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")        // `api`, so there is something to export
         }
     }
 }
@@ -236,6 +244,59 @@ func application(_ app: UIApplication, continue userActivity: NSUserActivity, �
 The second one only matters when you configure `universalLinkUrl`, which is exactly what makes
 forgetting it fail intermittently.
 
+### Web
+
+The browser target runs on **[LIFF](https://developers.line.biz/en/docs/liff/overview/)**, LINE's
+official JavaScript SDK, and that choice is forced rather than taken: LINE's plain OAuth token
+exchange requires the channel **secret** (`client_secret` is *Required* in the API reference, and
+PKCE only adds a parameter beside it), and a secret shipped in a browser is a secret published.
+LIFF is LINE's own login that completes without it.
+
+Two one-time steps:
+
+1. In the [LINE Developers Console](https://developers.line.biz/console/), open the channel's
+   **LIFF** tab and add a LIFF app. Its **endpoint URL** is the page your app is served from, and
+   its scopes are chosen there — `LineLoginRequest` is ignored on this platform, because in LIFF
+   the scopes belong to that registration.
+2. Pass the LIFF app's ID when configuring:
+
+```kotlin
+LineLogin.configure(
+    LineLoginConfig(
+        channelId = "1234567890",
+        liffId = "1234567890-abcdefgh",   // web only; Android and iOS ignore it
+    ),
+)
+```
+
+The SDK itself loads from LINE's CDN the first time `configure` runs — nothing to bundle. An app
+that already ships `@line/liff` wins: the loader steps aside whenever `globalThis.liff` exists.
+
+**`login()` is a full-page redirect here, not a dialog.** With nobody signed in, the call navigates
+to LINE and never returns — the page unloads underneath it. LINE redirects back, your app starts
+fresh, and `configure` completes the login while initialising: by the time your first frame renders,
+the session already exists.
+
+That last part is why a web app has to **check for a session at startup** rather than waiting for a
+tap. Skip this and a user who has just logged in comes back to a page that still shows a login
+button, because nothing has asked:
+
+```kotlin
+// wherever your app starts — the same code works on every platform
+LaunchedEffect(Unit) {
+    if (LineLogin.isLoggedIn()) {
+        showSignedIn(LineLogin.login())   // returns immediately, no UI, no redirect
+    }
+}
+```
+
+Then the button's own handler can be fire-and-forget: on web it navigates away, and on Android and
+iOS it returns a result as usual.
+
+Two smaller differences, both also on the KDoc: `logout()` clears this browser only (LIFF has no
+client-side revoke, so the grant survives until it expires), and `currentAccessToken()` asks LINE
+for the expiry — one network round trip — because LIFF does not store one.
+
 ## 🟢 Login button
 
 **LINE requires login buttons to follow its
@@ -291,7 +352,7 @@ The isolation zone is the one rule the button cannot enforce from the inside: ke
 | Type | What it is |
 |---|---|
 | `LineLogin` | The entry point: `configure`, `isConfigured`, `login`, `logout`, `currentAccessToken`, `isLoggedIn` |
-| `LineLoginConfig` | Channel ID, and an optional iOS universal link |
+| `LineLoginConfig` | Channel ID, an optional iOS universal link, and the web target's LIFF app ID |
 | `LineLoginRequest` | Per-login options: scopes, nonce, `forceWebLogin`, bot prompt |
 | `LineScope` | `Profile`, `OpenId`, `Email`, or any scope LINE adds later |
 | `LineLoginResult` | `Success` · `Cancelled` · `Failure` |
@@ -392,6 +453,9 @@ Keyed by what you actually see.
 | `Failure(Internal, "The LINE login screen did not start…")` | `login()` was called while the app was in the background on Android. |
 | `Unknown iOS simulator arch: 'x86_64'` | An Intel simulator slice was requested for a project without an `iosX64` target. Add `EXCLUDED_ARCHS[sdk=iphonesimulator*] = x86_64`. |
 | `Failure(NotConfigured, …)` on Android only | Your app removed `androidx.startup.InitializationProvider`. Use `LineLogin.configure(context, config)`. |
+| Web: every call fails with `NotConfigured` mentioning `liffId` | The browser login runs on LIFF, and `LineLoginConfig.liffId` was not set. Add a LIFF app to the channel in the console and pass its ID — see [Web](#web). |
+| Web: the button's caption renders as boxes (□□□) | Compose for Web ships no CJK glyphs, so Japanese and Korean captions need a font your app registers — the same as any other CJK text in a Compose wasm app. Register one, or pass an ASCII `text` to `LineLoginButton`. |
+| Web: `login()` never returns | That is the design, not a hang: in a browser it is a full-page redirect, and the page unloads before there is anything to return. See [Web](#web) for the shape a web login takes. |
 
 ## 🤔 Design notes
 
@@ -418,7 +482,7 @@ one-shot and asserts on a second call. An API that let you build several clients
 
 ## 📱 Sample
 
-[`sample/`](sample) is a Compose Multiplatform app running on both platforms. Put your channel ID in
+[`sample/`](sample) is a Compose Multiplatform app running on Android, iOS and the web. Put your channel ID in
 [`SampleConfig.kt`](sample/composeApp/src/commonMain/kotlin/dev/yjyoon/lineloginkmp/sample/SampleConfig.kt),
 then:
 

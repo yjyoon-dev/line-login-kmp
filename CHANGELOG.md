@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-28
+
+### Added
+
+- **Web support** (`wasmJs`, browser): both artifacts now publish a Kotlin/Wasm target. The browser
+  half runs on LIFF, LINE's official JavaScript SDK, loaded from LINE's CDN at configure time —
+  the plain OAuth web flow is off the table because LINE's token endpoint requires the channel
+  secret, which must never ship in a browser. `LineLoginConfig` gains `liffId` to name the LIFF
+  app; Android and iOS ignore it.
+- Web semantics, documented on the KDoc and in the README: `login()` is a full-page redirect that
+  does not resume, `logout()` clears the browser only, and `currentAccessToken()` confirms the
+  expiry with LINE because LIFF does not store one.
+
 ## [1.0.1] - 2026-08-17
 
 ### Added
@@ -60,5 +73,7 @@ First release.
   18 languages. LINE's own icon is bundled — unmodified, from LINE's official template — so the
   button needs no asset from the consumer; see NOTICE for the trademark terms that come with it.
 
-[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.1.0
+[1.0.1]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.0

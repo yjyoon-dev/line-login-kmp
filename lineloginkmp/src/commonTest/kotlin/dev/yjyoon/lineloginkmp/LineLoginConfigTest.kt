@@ -71,4 +71,23 @@ class LineLoginRequestTest {
         val rendered = LineLoginRequest(nonce = "super-secret-nonce").toString()
         assertEquals(false, rendered.contains("super-secret-nonce"))
     }
+
+    @Test
+    fun blankLiffIdIsRejectedButNullIsNot() {
+        // Null means "no web target in this app" and is the default; blank is always a mistake.
+        assertFailsWith<IllegalArgumentException> {
+            LineLoginConfig(channelId = "123", liffId = " ")
+        }
+        LineLoginConfig(channelId = "123", liffId = null)
+        LineLoginConfig(channelId = "123", liffId = "1234567890-abcdefgh")
+    }
+
+    @Test
+    fun liffIdParticipatesInEqualitySoConfigureCanTreatARepeatAsANoOp() {
+        val withLiff = LineLoginConfig(channelId = "123", liffId = "1234567890-abcdefgh")
+        val withoutLiff = LineLoginConfig(channelId = "123")
+
+        kotlin.test.assertEquals(withLiff, LineLoginConfig(channelId = "123", liffId = "1234567890-abcdefgh"))
+        kotlin.test.assertNotEquals(withLiff, withoutLiff)
+    }
 }
