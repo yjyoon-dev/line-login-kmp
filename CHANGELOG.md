@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Web support** (`wasmJs`, browser): both artifacts now publish a Kotlin/Wasm target. The browser
+  half runs on LIFF, LINE's official JavaScript SDK, loaded from LINE's CDN at configure time —
+  the plain OAuth web flow is off the table because LINE's token endpoint requires the channel
+  secret, which must never ship in a browser. `LineLoginConfig` gains `liffId` to name the LIFF
+  app; Android and iOS ignore it.
+- Web semantics, documented on the KDoc and in the README: `login()` is a full-page redirect that
+  does not resume, `logout()` clears the browser only, and `currentAccessToken()` confirms the
+  expiry with LINE because LIFF does not store one.
+
 ## [1.0.1] - 2026-08-17
 
 ### Added
