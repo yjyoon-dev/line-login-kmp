@@ -111,12 +111,23 @@ private fun mapLiffInitError(message: String): LineLoginErrorCode =
         else -> LineLoginErrorCode.Internal
     }
 
-private suspend fun awaitReady(): LineLoginResult.Failure? =
-    ready?.await()
-        ?: LineLoginResult.Failure(
-            code = LineLoginErrorCode.NotConfigured,
-            message = defaultMessageFor(LineLoginErrorCode.NotConfigured),
-        )
+/**
+ * Null when LIFF is ready; the failure to report otherwise.
+ *
+ * Deliberately not written with an elvis operator. `ready?.await() ?: failure` collapses the two
+ * cases that matter — "configure was never called" and "initialisation finished successfully",
+ * which is also a null — into the same branch, so every successful login would report
+ * [LineLoginErrorCode.NotConfigured]. It did, until a real login in a browser said so.
+ */
+private suspend fun awaitReady(): LineLoginResult.Failure? {
+    val initialisation =
+        ready
+            ?: return LineLoginResult.Failure(
+                code = LineLoginErrorCode.NotConfigured,
+                message = defaultMessageFor(LineLoginErrorCode.NotConfigured),
+            )
+    return initialisation.await()
+}
 
 internal actual suspend fun platformLogin(
     config: LineLoginConfig,
