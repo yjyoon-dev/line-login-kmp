@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -65,6 +66,18 @@ fun App() {
             var status by remember { mutableStateOf("Not signed in") }
             var busy by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
+
+            // Reflect an existing session at startup rather than waiting for a tap. Every platform
+            // benefits — a returning user should not be shown a login button they do not need —
+            // but on the web it is the difference between working and looking broken: a browser
+            // login finishes during configure() on the page LINE redirects back to, so without
+            // this the app holds a valid session and still says "Not signed in" until someone
+            // presses the button a second time.
+            LaunchedEffect(Unit) {
+                if (LineLogin.isLoggedIn()) {
+                    status = "Already signed in · " + describe(LineLogin.login())
+                }
+            }
 
             Column(
                 modifier =

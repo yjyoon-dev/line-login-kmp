@@ -268,9 +268,24 @@ that already ships `@line/liff` wins: the loader steps aside whenever `globalThi
 
 **`login()` is a full-page redirect here, not a dialog.** With nobody signed in, the call navigates
 to LINE and never returns — the page unloads underneath it. LINE redirects back, your app starts
-fresh, `configure` completes the login while initialising, and the next `login()` returns
-`Success` immediately. Write the login button's click handler as fire-and-forget, and decide what
-to show at startup from `isLoggedIn()` — which is what a well-behaved web login looks like anyway.
+fresh, and `configure` completes the login while initialising: by the time your first frame renders,
+the session already exists.
+
+That last part is why a web app has to **check for a session at startup** rather than waiting for a
+tap. Skip this and a user who has just logged in comes back to a page that still shows a login
+button, because nothing has asked:
+
+```kotlin
+// wherever your app starts — the same code works on every platform
+LaunchedEffect(Unit) {
+    if (LineLogin.isLoggedIn()) {
+        showSignedIn(LineLogin.login())   // returns immediately, no UI, no redirect
+    }
+}
+```
+
+Then the button's own handler can be fire-and-forget: on web it navigates away, and on Android and
+iOS it returns a result as usual.
 
 Two smaller differences, both also on the KDoc: `logout()` clears this browser only (LIFF has no
 client-side revoke, so the grant survives until it expires), and `currentAccessToken()` asks LINE
