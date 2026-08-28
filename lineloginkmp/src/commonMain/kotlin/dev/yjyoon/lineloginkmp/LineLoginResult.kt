@@ -70,7 +70,7 @@ public sealed interface LineLoginResult {
     /**
      * The login could not be completed.
      *
-     * @property code A coarse category, stable across both platforms — switch on this.
+     * @property code A coarse category, stable across every target — switch on this.
      * @property message A human-readable description, in English. Suitable for logs and bug
      *   reports, not for end users.
      * @property rawCode The native SDK's own code, verbatim: the `LineApiResponseCode` name on

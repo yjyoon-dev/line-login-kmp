@@ -53,6 +53,20 @@ kotlin {
 
     // No iosX64: Compose Multiplatform does not publish the Intel simulator target. The core
     // library still supports it — only this module cannot.
+    // Compose Multiplatform publishes wasmJs artifacts for everything this module uses, and the
+    // button itself is pure Compose — the icon is bytes in the binary, not a packaged resource —
+    // so the web target costs nothing beyond declaring it.
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64(),

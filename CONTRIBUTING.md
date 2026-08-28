@@ -36,6 +36,7 @@ lineloginkmp/                 the published library
     │   └── internal/         the expect seam and the mapping tables
     ├── androidMain/          proxy Activity, request bus, androidx.startup bootstrap
     ├── iosMain/              cinterop calls into LineSDKObjC
+    ├── wasmJsMain/           the browser half: LIFF through js() interop
     ├── commonTest/           value types and both error tables
     ├── androidHostTest/      mapping against real LINE SDK objects, and the request bus
     └── iosTest/              the cinterop link smoke test
@@ -87,6 +88,12 @@ Before "cleaning up" any of these, read the comment above them:
   content when the button is given no width *and* pin the icon square to the leading edge when the
   button is stretched: content-sized it centres and the icon drifts inward, weighted it claims the
   parent's full width uninvited. `LineLoginButtonGeometryTest` pins both behaviours.
+- The web `platformLogin` ends in `awaitCancellation()` when nobody is signed in. That is not a
+  leak: `liff.login()` has just started a full-page redirect, the page is unloading, and there is
+  nothing truthful to resume with. Returning a made-up result there would be the bug.
+- The web target asks LINE for the token expiry (`/oauth2/v2.1/verify`) because LIFF does not store
+  one. The endpoint's CORS was verified against production — `access-control-allow-origin: *` on
+  the real response, not only the preflight — before this was relied on.
 - `LineLoginButtonDefaults`' ratios were measured from LINE's own 20/32/44 dp button images, not
   derived from the prose. `LineLoginButtonDefaultsTest` pins them; a rendered button was checked
   against the artwork to within a fraction of a dp.
@@ -133,7 +140,8 @@ CI runs all of the above on every pull request.
 
 A real login needs a real channel and a real account, so these stay a manual checklist for releases:
 
-- Login with the LINE app installed, and without it, on both platforms.
+- Login with the LINE app installed, and without it, on Android and iOS.
+- On the web: a login through the redirect, and that a reload afterwards still reports the session.
 - Cancelling from the LINE app, and from the browser sheet.
 - On iOS with LINE **not** installed: the browser finishes and control returns to the app. This is
   what `.onOpenURL` exists for, and the failure mode is silent.
