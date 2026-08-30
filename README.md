@@ -5,7 +5,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-Multiplatform-A97BFF.svg?logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![Platform](https://img.shields.io/badge/Platform-Android-brightgreen.svg)](https://developer.android.com)
 [![Platform](https://img.shields.io/badge/Platform-iOS-black.svg)](https://developer.apple.com/ios/)
-[![Platform](https://img.shields.io/badge/Platform-Web-blue.svg)](https://kotlinlang.org/docs/wasm-overview.html)
+[![Platform](https://img.shields.io/badge/Platform-Wasm-blue.svg)](https://kotlinlang.org/docs/wasm-overview.html)
 
 **LINE Login for Kotlin Multiplatform.** One shared API on **Android, iOS and the web**, with
 LINE's own SDKs underneath — the native ones on mobile, LIFF in the browser.
