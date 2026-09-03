@@ -197,3 +197,11 @@ private fun LineLoginRequest.toSdkParameters(): LineSDKLoginManagerParameters =
             },
         )
     }
+
+/**
+ * Always null: iOS presents its login in-process and resumes the caller, so nothing is left
+ * pending. `AccessTokenStore` does keep the raw ID token, but reporting a stored session as a fresh
+ * login would let an app skip a sign-in the user never performed on this launch — the web needs
+ * that only because its redirect destroys the caller.
+ */
+internal actual suspend fun platformResumePendingLogin(config: LineLoginConfig): LineLoginResult? = null

@@ -175,3 +175,11 @@ internal fun isLineAppInstalledIn(context: Context): Boolean =
     } catch (notInstalled: PackageManager.NameNotFoundException) {
         false
     }
+
+/**
+ * Always null: Android's login returns to the coroutine that started it, so nothing is ever left
+ * pending. The SDK does persist a session, but `LineApiClient` exposes only the access token — an
+ * ID token exists solely in a login result — so reporting a stored session as a login would mean
+ * inventing a Success with no `idToken`, which is exactly the field a backend needs.
+ */
+internal actual suspend fun platformResumePendingLogin(config: LineLoginConfig): LineLoginResult? = null
