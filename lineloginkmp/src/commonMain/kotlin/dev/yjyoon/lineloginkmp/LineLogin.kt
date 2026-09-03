@@ -21,6 +21,7 @@ import dev.yjyoon.lineloginkmp.internal.platformIsLineAppInstalled
 import dev.yjyoon.lineloginkmp.internal.platformIsLoggedIn
 import dev.yjyoon.lineloginkmp.internal.platformLogin
 import dev.yjyoon.lineloginkmp.internal.platformLogout
+import dev.yjyoon.lineloginkmp.internal.platformResumePendingLogin
 import dev.yjyoon.lineloginkmp.internal.withLineLoginLock
 import kotlinx.coroutines.sync.Mutex
 import kotlin.concurrent.Volatile
@@ -106,8 +107,11 @@ public object LineLogin {
      *
      * In a browser this is a **full-page redirect**, not a dialog: when nobody is signed in, the
      * call navigates to LINE and never resumes — the page unloads underneath it. LINE then
-     * redirects back, the app starts fresh, [configure] completes the login as it initialises,
-     * and the next `login()` call returns [LineLoginResult.Success] without showing anything.
+     * redirects back, the app starts fresh, and [configure] completes the login as it initialises —
+     * at which point the result has nobody left to go to. **Call [resumePendingLogin] at startup to
+     * receive it.** Without that, the app shows its login screen again and a second press is what
+     * appears to work, because the tokens were already there.
+     *
      * A stored session short-circuits all of that and returns immediately. [request] is ignored
      * on this platform: in LIFF the scopes belong to the LIFF app's console registration.
      *
@@ -176,6 +180,45 @@ public object LineLogin {
     public suspend fun currentAccessToken(): LineAccessToken? {
         val config = configuration ?: return null
         return platformCurrentAccessToken(config)
+    }
+
+    /**
+     * The login LINE completed while your app was not running, or null when there is none.
+     *
+     * **The web needs this; Android and iOS return null.** In a browser [login] is a full-page
+     * redirect: the page unloads, LINE authenticates, and the user comes back to a *fresh* app whose
+     * `login()` call no longer exists. [configure] hands the returning URL to LIFF, which completes
+     * the login and stores the tokens — but the result has nobody left to go to. This is where it
+     * goes.
+     *
+     * Call it at startup, after [configure], when your app has no session of its own:
+     *
+     * ```
+     * LineLogin.configure(LineLoginConfig(channelId = "…", liffId = "…"))
+     *
+     * val result = restoreMySession() ?: LineLogin.resumePendingLogin()
+     * ```
+     *
+     * Skip it and the app shows its login screen again after a successful login — and pressing the
+     * button a *second* time appears to fix it, because the tokens were already there and pressing
+     * merely asked for them. That symptom is what this exists to remove.
+     *
+     * Never presents UI and never redirects: it either has a completed login to hand over or it
+     * does not. A [LineLoginResult.Failure] is never returned — a startup call the user did not ask
+     * for has no business reporting errors, so an initialisation that failed reads as null and the
+     * error surfaces from the [login] the user goes on to attempt.
+     *
+     * On Android and iOS this is always null, deliberately, because nothing is ever pending there:
+     * those logins resume the coroutine that started them. The reason for not reporting a *stored*
+     * session instead differs by platform, and only one of them is a limitation — on Android the SDK
+     * exposes the access token but never the ID token outside a login result, so a Success would
+     * have to omit the one field a backend verifies; on iOS the token store does keep the raw ID
+     * token, and the null is a choice: a session persisted from some earlier launch is not a login
+     * performed on this one, and an app that wants it can ask [isLoggedIn] and say so itself.
+     */
+    public suspend fun resumePendingLogin(): LineLoginResult.Success? {
+        val config = configuration ?: return null
+        return platformResumePendingLogin(config) as? LineLoginResult.Success
     }
 
     /**

@@ -147,6 +147,19 @@ internal actual suspend fun platformLogin(
         awaitCancellation()
     }
 
+    return establishedSession()
+}
+
+/**
+ * The established LIFF session, as a login result.
+ *
+ * Shared by [platformLogin] and [platformResumePendingLogin] so that a login the app asked for and
+ * one it merely picked up report exactly the same thing — same token, same profile, same ID token.
+ * Only how they got here differs.
+ *
+ * The caller must have awaited initialisation and confirmed `liffIsLoggedIn()` first.
+ */
+private suspend fun establishedSession(): LineLoginResult {
     val tokenValue =
         liffGetAccessToken()
             ?: return LineLoginResult.Failure(
@@ -246,4 +259,26 @@ internal actual suspend fun platformIsLineAppInstalled(): Boolean {
     // the SDK there is nothing to ask at all.
     val initialised = ready?.let { it.isCompleted && it.await() == null } ?: false
     return initialised && liffIsInClient()
+}
+
+/**
+ * The other half of the browser's login, and the reason this function exists at all.
+ *
+ * `login()` in an external browser navigates the page away; the app that called it never runs
+ * again. LINE redirects back to a *fresh* process with `?code=…&state=…` in the URL, and
+ * [platformConfigure] — which every start runs — hands that code to `liff.init()`, which completes
+ * the login and stores the tokens. At that point the session exists and nobody is waiting for it.
+ *
+ * Calling this at startup is what turns the return trip into a signed-in app. Without it the app
+ * shows its login screen again, and the *second* press is what appears to work — the tokens were
+ * already there, and pressing merely asked for them.
+ *
+ * Null when there is nothing to resume, including when initialisation itself failed: this runs
+ * before the user has asked for anything, so the honest fallback is the login screen, where
+ * pressing the button reports the real error.
+ */
+internal actual suspend fun platformResumePendingLogin(config: LineLoginConfig): LineLoginResult? {
+    if (awaitReady() != null) return null
+    if (!liffIsLoggedIn()) return null
+    return establishedSession() as? LineLoginResult.Success
 }

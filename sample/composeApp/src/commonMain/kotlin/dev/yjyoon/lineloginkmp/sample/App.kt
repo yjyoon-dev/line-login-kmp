@@ -67,16 +67,25 @@ fun App() {
             var busy by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
 
-            // Reflect an existing session at startup rather than waiting for a tap. Every platform
-            // benefits — a returning user should not be shown a login button they do not need —
-            // but on the web it is the difference between working and looking broken: a browser
-            // login finishes during configure() on the page LINE redirects back to, so without
-            // this the app holds a valid session and still says "Not signed in" until someone
-            // presses the button a second time.
+            // Two different questions, and only the first one is about *this* start.
+            //
+            // resumePendingLogin() is the web's other half: a browser login completes during
+            // configure() on the page LINE redirects back to, with no login() call left to receive
+            // it. Without this the sample holds a valid session and still says "Not signed in"
+            // until someone presses the button a second time — which is the bug this API exists to
+            // remove. It is null on Android and iOS, where a login always returns to its caller.
+            //
+            // isLoggedIn() is the older question — "has this device signed in before?" — and it is
+            // answered without performing a login, because on Android performing one would launch
+            // an Activity for a login nobody asked for.
             LaunchedEffect(Unit) {
-                if (LineLogin.isLoggedIn()) {
-                    status = "Already signed in · " + describe(LineLogin.login())
-                }
+                val resumed = LineLogin.resumePendingLogin()
+                status =
+                    when {
+                        resumed != null -> "Signed in · " + describe(resumed)
+                        LineLogin.isLoggedIn() -> "Already signed in · tap to refresh the token"
+                        else -> status
+                    }
             }
 
             Column(

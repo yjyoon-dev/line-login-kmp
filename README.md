@@ -72,11 +72,11 @@ signing-certificate SHA-1, and your iOS bundle identifier, registered on it — 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.1")
 
             // Optional: a Compose Multiplatform login button that follows LINE's design
             // guidelines. Skip it if you would rather build the login button yourself.
-            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.1.0")
+            implementation("dev.yjyoon.lineloginkmp:lineloginkmp-compose:1.1.1")
         }
     }
 }
@@ -93,12 +93,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true                             // required — frameworks are dynamic by default
-            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")     // ← add this
+            export("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.1")     // ← add this
         }
     }
     sourceSets {
         commonMain.dependencies {
-            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.0")        // `api`, so there is something to export
+            api("dev.yjyoon.lineloginkmp:lineloginkmp:1.1.1")        // `api`, so there is something to export
         }
     }
 }
@@ -277,18 +277,25 @@ to LINE and never returns — the page unloads underneath it. LINE redirects bac
 fresh, and `configure` completes the login while initialising: by the time your first frame renders,
 the session already exists.
 
-That last part is why a web app has to **check for a session at startup** rather than waiting for a
-tap. Skip this and a user who has just logged in comes back to a page that still shows a login
-button, because nothing has asked:
+That last part is why a web app must **pick the login up at startup** rather than waiting for a tap.
+The result has nobody to go to — the `login()` call that would have received it died with the old
+page — so something has to ask for it:
 
 ```kotlin
-// wherever your app starts — the same code works on every platform
+// wherever your app starts, after configure()
 LaunchedEffect(Unit) {
-    if (LineLogin.isLoggedIn()) {
-        showSignedIn(LineLogin.login())   // returns immediately, no UI, no redirect
-    }
+    val resumed = restoreMySession() ?: LineLogin.resumePendingLogin()
+    if (resumed != null) showSignedIn(resumed)
 }
 ```
+
+Skip it and the symptom is specific and confusing: the user finishes a LINE login, comes back to a
+page that still shows the login button, presses it **a second time**, and *that* works — because the
+tokens were already there and pressing merely asked for them.
+
+`resumePendingLogin()` presents no UI and never redirects, so it is safe to call on every start.
+It returns null on Android and iOS, where a login always resumes the coroutine that began it, so the
+same startup code compiles and behaves correctly everywhere.
 
 Then the button's own handler can be fire-and-forget: on web it navigates away, and on Android and
 iOS it returns a result as usual.
@@ -351,7 +358,7 @@ The isolation zone is the one rule the button cannot enforce from the inside: ke
 
 | Type | What it is |
 |---|---|
-| `LineLogin` | The entry point: `configure`, `isConfigured`, `login`, `logout`, `currentAccessToken`, `isLoggedIn` |
+| `LineLogin` | The entry point: `configure`, `isConfigured`, `login`, `resumePendingLogin`, `logout`, `currentAccessToken`, `isLoggedIn` |
 | `LineLoginConfig` | Channel ID, an optional iOS universal link, and the web target's LIFF app ID |
 | `LineLoginRequest` | Per-login options: scopes, nonce, `forceWebLogin`, bot prompt |
 | `LineScope` | `Profile`, `OpenId`, `Email`, or any scope LINE adds later |

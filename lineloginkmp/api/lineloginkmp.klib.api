@@ -209,6 +209,7 @@ final object dev.yjyoon.lineloginkmp/LineLogin { // dev.yjyoon.lineloginkmp/Line
     final suspend fun isLoggedIn(): kotlin/Boolean // dev.yjyoon.lineloginkmp/LineLogin.isLoggedIn|isLoggedIn(){}[0]
     final suspend fun login(dev.yjyoon.lineloginkmp/LineLoginRequest = ...): dev.yjyoon.lineloginkmp/LineLoginResult // dev.yjyoon.lineloginkmp/LineLogin.login|login(dev.yjyoon.lineloginkmp.LineLoginRequest){}[0]
     final suspend fun logout(): dev.yjyoon.lineloginkmp/LineLogoutResult // dev.yjyoon.lineloginkmp/LineLogin.logout|logout(){}[0]
+    final suspend fun resumePendingLogin(): dev.yjyoon.lineloginkmp/LineLoginResult.Success? // dev.yjyoon.lineloginkmp/LineLogin.resumePendingLogin|resumePendingLogin(){}[0]
 }
 
 // Targets: [ios]
