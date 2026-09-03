@@ -43,6 +43,15 @@ internal expect suspend fun platformCurrentAccessToken(config: LineLoginConfig):
 internal expect suspend fun platformIsLoggedIn(config: LineLoginConfig): Boolean
 
 /**
+ * The login this platform completed without a `login()` call waiting for it, or null.
+ *
+ * Only the web can have one: its login is a full-page redirect, so the process that called
+ * `login()` is gone by the time LINE answers. Android and iOS return null — their logins come back
+ * to their own caller, so nothing is ever left pending to report.
+ */
+internal expect suspend fun platformResumePendingLogin(config: LineLoginConfig): LineLoginResult?
+
+/**
  * Takes no [LineLoginConfig]: whether LINE is on the device has nothing to do with which channel
  * the app uses, so this answers before `configure` has ever run.
  */

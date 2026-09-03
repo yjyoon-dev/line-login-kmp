@@ -34,6 +34,7 @@ public final class dev/yjyoon/lineloginkmp/LineLogin {
 	public final fun login (Ldev/yjyoon/lineloginkmp/LineLoginRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun login$default (Ldev/yjyoon/lineloginkmp/LineLogin;Ldev/yjyoon/lineloginkmp/LineLoginRequest;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun logout (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun resumePendingLogin (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/yjyoon/lineloginkmp/LineLoginAndroidKt {
