@@ -6,6 +6,31 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-03
+
+### Added
+
+- `LineLogin.resumePendingLogin()` — the login LINE completed while the app was not running, or null
+  when there is none. Only the web can have one: `login()` there is a full-page redirect, so the
+  coroutine that called it no longer exists when LINE answers, and `configure()` completes the login
+  on the fresh page with nobody left to receive the result. Call it at startup, after `configure()`.
+
+  Without it the symptom is specific: a user finishes a LINE login, returns to a page that still
+  shows the login button, presses it a **second** time, and that works — the tokens were already
+  there and pressing merely asked for them. 1.1.0 left every web consumer to discover the
+  `isLoggedIn()` + `login()` dance for themselves; this replaces it with one call.
+
+  Null on Android and iOS by design: their logins resume their own caller, so nothing is ever
+  pending. Reporting a *stored* session instead would be wrong for different reasons on each —
+  Android's SDK never exposes an ID token outside a login result, and on iOS a session persisted
+  from an earlier launch simply is not a login performed on this one.
+
+### Changed
+
+- The web sample resumes at startup through the new API instead of `isLoggedIn()` + `login()`. That
+  older pairing also performed a real login on Android, which launches an Activity for a sign-in
+  nobody asked for; the sample now answers "has this device signed in before?" without doing so.
+
 ## [1.1.0] - 2026-08-28
 
 ### Added
@@ -73,7 +98,8 @@ First release.
   18 languages. LINE's own icon is bundled — unmodified, from LINE's official template — so the
   button needs no asset from the consumer; see NOTICE for the trademark terms that come with it.
 
-[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/yjyoon-dev/line-login-kmp/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.1.0
 [1.0.1]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/yjyoon-dev/line-login-kmp/releases/tag/v1.0.0
